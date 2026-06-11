@@ -71,3 +71,45 @@ Set up the complete project skeleton so every subsequent phase can write code ra
 - Engine A: which family (reciprocal clique vs. directed star vs. complete bipartite) will yield the largest certified floor? — answered in Phase 1.
 - `chosen_triple` in `config.yaml` is tentative (`[MANC, MAOL, MCNS]`); will be set after reviewing Engine A frontier.
 - ORCA/GDV integration: confirm binary availability on target machine before enabling `gdv_enabled`.
+
+---
+
+## Phase P1 — Data IO (`src/io`) (2026-06-10)
+
+### What this phase did
+Built the streaming data-IO layer that loads each connectome edge list once and exposes two
+representations from the **same** load: a pure dict/set adjacency for the verifier and igraph graphs
+for the engines. Test-first: 13 tests written red, then implemented to green.
+
+### Key decisions (and why)
+- **Dependency split enforces the hard rule.** `src/io/loader.py` is pure Python (no igraph) and
+  holds the `Dataset` core + `build_adjacency`; `src/io/graphs.py` holds the igraph builders.
+  `src/io/__init__.py` re-exports **only** loader symbols, so `import src.io` (the verifier's path)
+  never imports igraph — guarded by a subprocess test. Engines import the builders explicitly via
+  `from src.io.graphs import ...` (chosen over a lazy `__getattr__` for an obvious, magic-free
+  boundary).
+- **`Dataset` is the single library-agnostic core**: `int_to_id` (reverse map), `id_to_int`,
+  `edges` (cleaned directed). Both representations derive from it, so igraph vertex indices align
+  1:1 with the compact ints used by the verifier's adjacency.
+- **IDs are strings throughout**, interned to compact ints; 18-digit root IDs round-trip exactly
+  (test asserts no int coercion).
+- **Streaming via `csv.reader` over the file handle** — never `read()`/`readlines()` — so 100 MB
+  inputs stay cheap. Header line skipped; blank lines ignored.
+- **Cleaning honored from config flags**: `drop_self_loops` (skip u==v), `collapse_parallel_edges`
+  (set dedup when True; list keeps multiplicity when False — a safety valve, default stays True).
+- **Reciprocal graph** (Engine A): undirected mutual-edges-only graph keeping the full node set so
+  indices still align; non-reciprocal nodes are simply isolated.
+- **Node set == edge endpoints** (assumption A5) — no degree-0 vertices by construction.
+
+### Outputs produced
+- `src/io/loader.py` — `Dataset`, `load_edge_list`, `build_adjacency`, `load_dataset`, `load_all`
+- `src/io/graphs.py` — `to_igraph`, `to_reciprocal_igraph`
+- `src/io/__init__.py` — pure re-exports
+- `tests/test_io.py` (13 tests) + `tests/__init__.py`
+
+### Open questions
+- The real-data end-to-end sanity-load (`load_dataset("MAOL")`) is **unverified**: `data/raw/**` is
+  deny-listed for all tools, so it can't be run here. Toy-CSV unit tests cover correctness, but a
+  real-file run (counts, wall-clock) should be confirmed manually by the user.
+- `load_dataset`/`load_all` resolve `data.dir` relative to CWD; if invoked from outside repo root,
+  paths may need to be anchored to repo root — revisit if any engine runs from a result dir.
