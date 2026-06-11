@@ -1,0 +1,26 @@
+{
+  "name": "MCNS",
+  "seed": 20260610,
+  "scipy_version": "1.17.1",
+  "num_nodes": 165820,
+  "num_edges": 6239094,
+  "wl": {
+    "depth": 5,
+    "rounds_run": 5,
+    "num_classes": 164332,
+    "stabilized_at_round": 2
+  },
+  "class_size_histogram": {
+    "1": 163553,
+    "2": 395,
+    "3": 191,
+    "4": 112,
+    "5": 49,
+    "6": 26,
+    "7": 2,
+    "8": 2,
+    "11": 1,
+    "14": 1
+  },
+  "wall_clock_s": 4.2363955420441926
+}

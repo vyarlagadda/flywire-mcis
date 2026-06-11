@@ -1,0 +1,24 @@
+{
+  "name": "MAOL",
+  "seed": 20260610,
+  "scipy_version": "1.17.1",
+  "num_nodes": 51668,
+  "num_edges": 6484673,
+  "wl": {
+    "depth": 5,
+    "rounds_run": 5,
+    "num_classes": 51549,
+    "stabilized_at_round": 3
+  },
+  "class_size_histogram": {
+    "1": 51508,
+    "2": 28,
+    "3": 5,
+    "4": 3,
+    "11": 1,
+    "12": 1,
+    "16": 2,
+    "22": 1
+  },
+  "wall_clock_s": 2.929851541062817
+}

@@ -223,3 +223,71 @@ red, then implemented to green (full suite now 41 passing). Tagged `v0.1-verifie
   via toy datasets so far; the first genuine engine candidate will be the real load test.
 - Structure detection treats N==2 (a lone directed/reciprocal edge) as `general`; not exercised and
   immaterial to pass/fail, but worth a note if a 2-node match is ever reported.
+
+---
+
+## Phase P3 — WL pruning + optional GDV (`src/invariants`) (2026-06-11)
+
+### What this phase did
+Built the cheap **necessary** match filter: directed 1-Weisfeiler–Leman color refinement implemented
+directly on a scipy.sparse CSR substrate (no graph library — *not* networkx's graph-level WL hash),
+plus a cross-dataset candidate-pool builder and a flag-gated optional ORCA/GDV wrapper. Ran WL on all
+five connectomes and committed the artifacts. Test-first: 12 tests written red, then to green (full
+suite now 53 passing).
+
+- `src/invariants/wl.py` — `build_csr(ds)` (out/in CSR from `Dataset.edges`), `directed_wl(ds,
+  max_iterations) -> WLResult`. Depth-0 color = `blake2b8(in_deg, out_deg)`; each round re-hashes
+  `(prev_color, sorted out-neighbor colors, sorted in-neighbor colors)` — in/out multisets kept
+  **separate** so direction matters. Colors are 64-bit **content hashes**.
+- `src/invariants/pool.py` — `color_classes(results, datasets, min_datasets) -> [ColorClass]`: group
+  nodes by color, keep classes present in ≥ `min_datasets_per_color_class` datasets, map compact ints
+  back to original **string** ids.
+- `src/invariants/gdv.py` — `gdv_available` / `gdv_signatures`, behind `invariants.gdv_enabled`;
+  graceful skip (warn + `None`, never crash) when the orca binary is absent. Clearly optional.
+- `src/invariants/run.py` — CLI mirroring `characterize/run.py`; writes per-dataset colors CSV +
+  JSON, `candidate_pool.json`, `summary.md`, `config.snapshot.yaml`.
+
+### Key decisions (and why)
+- **Content-hash colors → cross-dataset comparability with no shared relabeling table.** Because each
+  color is a deterministic hash of globally-meaningful predecessor hashes (rooted in `(in_deg,
+  out_deg)`), two nodes in *different* connectomes get the same color iff their depth-d directed-WL
+  rooted trees coincide. Local integer compression would not be comparable across datasets.
+- **Equal depth is required for comparability, so `directed_wl` always runs the full
+  `max_iterations` rounds — no early stop.** A node stable at depth 2 still hashes to *different
+  values* at depth 5 (each round re-wraps the partition); comparing two datasets demands the same
+  depth. The "or until stable" intent is honored as a recorded diagnostic, `stabilized_at_round`
+  (first round the class count stopped growing), not as an early cutoff.
+- **scipy CSR substrate, no graph library** (per CLAUDE.md): a subprocess test asserts
+  `import src.invariants.wl` pulls in no networkx. WL stays the lightweight invariant it is meant to be.
+- **64-bit digests:** collision probability across ~10⁶ total nodes ≈ 5e-8 — negligible; noted in code.
+- **NECESSARY-not-sufficient** stated in module docstrings, the `candidate_pool.json` `note`, and the
+  required toy test: a directed 6-cycle vs two directed 3-cycles — every vertex is in-deg/out-deg 1, so
+  WL never refines; a vertex from each lands in the **same** color (WL must not wrongly separate
+  WL-equivalent-but-non-isomorphic vertices).
+- **GDV scoped as a guarded graceful-skip wrapper** (resolved with user): no orca binary installed, so
+  `gdv_enabled` flipped `true → false` in config (matches its own "off by default" comment). Real GDV
+  computation deferred until an engine consumes it.
+
+### Outputs produced
+- `src/invariants/{wl.py, pool.py, gdv.py, run.py, __init__.py}`; `tests/test_invariants.py` (12 tests)
+- `results/invariants/{BANC,FAFB,MANC,MAOL,MCNS}_colors.csv` + `*.json`, `candidate_pool.json`,
+  `summary.md`, `config.snapshot.yaml`
+- `docs/invariants.md` (interpretation + depth-sweep table); `config.yaml` `gdv_enabled → false`
+
+### Findings → decisions
+- **The candidate pool is strongly depth-sensitive.** Pool size (classes in ≥3 datasets): depth 0 =
+  **11,211**; depth 1 = 16; depth ≥2 = **2**. Deep WL is a near-perfect *separator* (~99.7% singleton
+  classes by depth 2; BANC: 112,411 singletons / 112,885 nodes), so exact deep-color equality across
+  datasets almost never holds. The committed depth-5 `candidate_pool.json` therefore has just 2 classes
+  (both spanning BANC/FAFB/MAOL, not the chosen triple).
+- **Implication for Engine C seeding:** deep WL = a great inline *pairwise rejection* test, a poor
+  *seed generator*. Seed from **shallow** WL (degree buckets at depth 0, or depth-1 colors) and use
+  deep-WL color only as the necessary pruning check during extension.
+
+### Open questions
+- **Recommended (not applied): split the seeding depth from the rejection-filter depth** rather than a
+  single `invariants.wl_max_iterations`. The depth-5 pool is faithful but near-empty for seeding; Engine
+  C should consume shallow-depth (0–1) color classes for seeds. Decide when Engine C is built.
+- WL refinement is a Python per-node loop (numpy slice + sort + blake2b); ~2–4 s/dataset at depth 5 here
+  (largest: MCNS 6.2 M edges, 165 k nodes). Fine for one-off; revisit if depth or re-runs grow.
+- ORCA/GDV remains unimplemented behind the flag; wire it only if Engine C needs richer-than-WL seeds.

@@ -21,7 +21,7 @@ characterize:                        # Phase P1b — per-dataset structural fing
 invariants:                          # Phase 3 — Weisfeiler–Leman (+ optional GDV)
   wl_max_iterations: 5
   min_datasets_per_color_class: 3
-  gdv_enabled: true                 # ORCA graphlet seeding; off by default (expensive)
+  gdv_enabled: false                 # ORCA graphlet seeding; off by default (expensive)
   gdv_sample_fraction: 0.05
 
 engine_a:                            # canonical

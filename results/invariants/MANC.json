@@ -1,0 +1,18 @@
+{
+  "name": "MANC",
+  "seed": 20260610,
+  "scipy_version": "1.17.1",
+  "num_nodes": 23641,
+  "num_edges": 5305602,
+  "wl": {
+    "depth": 5,
+    "rounds_run": 5,
+    "num_classes": 23640,
+    "stabilized_at_round": 1
+  },
+  "class_size_histogram": {
+    "1": 23639,
+    "2": 1
+  },
+  "wall_clock_s": 2.1673408749047667
+}

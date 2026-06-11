@@ -1,0 +1,26 @@
+{
+  "name": "BANC",
+  "seed": 20260610,
+  "scipy_version": "1.17.1",
+  "num_nodes": 112885,
+  "num_edges": 2676592,
+  "wl": {
+    "depth": 5,
+    "rounds_run": 5,
+    "num_classes": 112574,
+    "stabilized_at_round": 2
+  },
+  "class_size_histogram": {
+    "1": 112411,
+    "2": 106,
+    "3": 29,
+    "4": 10,
+    "5": 5,
+    "6": 3,
+    "7": 1,
+    "8": 4,
+    "10": 2,
+    "11": 3
+  },
+  "wall_clock_s": 2.3037704590242356
+}
