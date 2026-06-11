@@ -61,7 +61,7 @@ Engine A alone is already a complete, certified submission.
 ## Workflow conventions
 - Plan first for algorithmic phases (plan mode); do NOT write code until I approve the plan.
 - Test-first for the verifier and engines: failing tests, then implement to green.
-- One phase = one git branch = one focused session. Commit at phase end; update docs/phase-log.md
+- One phase = one focused session = one commit on main. Commit at phase end; update docs/phase-log.md
   with what was done, key decisions and why, outputs produced, open questions.
 - Reproducibility: seed all RNG from config; record seeds + wall-clock in each result JSON.
 

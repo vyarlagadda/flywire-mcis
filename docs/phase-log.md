@@ -108,8 +108,60 @@ for the engines. Test-first: 13 tests written red, then implemented to green.
 - `tests/test_io.py` (13 tests) + `tests/__init__.py`
 
 ### Open questions
-- The real-data end-to-end sanity-load (`load_dataset("MAOL")`) is **unverified**: `data/raw/**` is
-  deny-listed for all tools, so it can't be run here. Toy-CSV unit tests cover correctness, but a
-  real-file run (counts, wall-clock) should be confirmed manually by the user.
+- Real-data sanity-load **confirmed** (2026-06-11): `load_dataset("MAOL")` → 51,668 nodes /
+  6,484,673 edges in 2.6 s; reciprocal graph 913,256 mutual edges; IDs round-trip as strings;
+  `import src.io` stays igraph-free. Resolved.
 - `load_dataset`/`load_all` resolve `data.dir` relative to CWD; if invoked from outside repo root,
   paths may need to be anchored to repo root — revisit if any engine runs from a result dir.
+
+---
+
+## Phase P1b — Characterization (`src/characterize`) (2026-06-11)
+
+### What this phase did
+Built the igraph-based structural-fingerprint layer and ran it on all five connectomes, turning the
+tentative triple/family choices into evidence-based ones. Test-first: 10 tests written red, then
+implemented to green (full suite 23 passing).
+
+- `src/characterize/metrics.py` — `compute_metrics(ds, cfg)` returns a JSON-serializable dict:
+  node/edge counts + density; in/out/total degree summaries (min/max/mean/median/std + p50/p90/p99)
+  with top-k degree tails recorded by **string** id; reciprocity fraction + dyad census; directed
+  total-degree degeneracy and the **reciprocal-graph degeneracy** with `reciprocal_clique_upper_bound`
+  (= degeneracy+1, the Engine A headline); and a directed 3-node motif census via `motifs_randesu`.
+- `src/characterize/run.py` — CLI (`python -m src.characterize.run [--dataset NAME | --all]
+  [--out ...]`); writes `<DATASET>.json` ×5, `config.snapshot.yaml`, and a generated `summary.md`.
+- Added a `characterize:` block to `config.yaml` (tail-k, quantiles, motif size, dense threshold,
+  cut_prob) — no tunables hard-coded.
+
+### Key decisions (and why)
+- **Motif census sampled on every dataset** (all > 1 M edges): `motifs_randesu(size=3,
+  cut_prob=[0.0, 0.0, 0.9])`, igraph RNG seeded from config. Sampled counts are an undercount of the
+  explored branches, **not** a scaled total — so cross-dataset comparison uses the normalized
+  `profile`, not raw `counts`. The `sampled` flag + `cut_prob` are recorded in each JSON.
+- **NaN isoclasses → `null`**; JSON written with `allow_nan=False` so output is strict-valid.
+- **Reciprocal degeneracy is the Engine A feasibility lever** — computed on `to_reciprocal_igraph`,
+  not the directed graph.
+
+### Outputs produced
+- `src/characterize/{metrics.py, run.py, __init__.py}`, `tests/test_characterize.py` (10 tests)
+- `results/characterization/{BANC,FAFB,MANC,MAOL,MCNS}.json` + `summary.md` + `config.snapshot.yaml`
+- `docs/characterization.md` (interpretation), `characterize:` block in `config.yaml`
+
+### Findings → decisions
+- **Two regimes:** sparse whole-CNS (BANC/FAFB/MCNS, density ~2e-4, reciprocity 0.14–0.17) vs dense
+  region-scale (MANC/MAOL, density 10–40×, reciprocity ~0.3). All are feed-forward-dominated
+  (acyclic triads ~73–81%; directed 3-cycles <0.3%). Strong hubs everywhere (out-deg max 1.8k–11k).
+- **Engine A:** reciprocal-clique ceiling (min UB over triple) = **48** for (BANC,FAFB,MCNS) vs only
+  **29** for the tentative (MANC,MAOL,MCNS) — MAOL's reciprocal structure is the binding constraint.
+  Star/biclique families also viable (large mutual-dyad counts + hubs) and may beat a clique.
+- **Triple choice (resolves A11):** by motif-profile L1 similarity, **(BANC, FAFB, MCNS)** is the
+  clear winner (total intra-distance 0.389 vs next-best 0.609; tentative triple ranks 5th at 0.734).
+  Both axes agree. **Recommend revising `engine_c.chosen_triple` → [BANC, FAFB, MCNS]**.
+
+### Open questions
+- `engine_c.chosen_triple` revision to `[BANC, FAFB, MCNS]` is **recommended but not yet applied** —
+  left as an explicit decision to confirm against the Engine A frontier before Engine C runs.
+- BANC/FAFB are the two 18-digit string-ID datasets and the two largest by edges; Engine C pools and
+  the exact induced-iso check must stay string-safe and memory-aware on them.
+- Motif `cut_prob` chosen lightly ([0,0,0.9]); MANC/MAOL motif census ran 3–6 min. Acceptable for a
+  one-off characterization; revisit if re-run cost matters.
