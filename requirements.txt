@@ -1,0 +1,9 @@
+python-igraph
+scipy
+numpy
+pandas
+pyyaml
+rustworkx        # optional: Rust speed, pip, VF2 cross-check
+networkx         # ONLY for small-graph viz + toy tests
+pytest
+# graph-tool / networkit / orca: escalation / optional, install separately

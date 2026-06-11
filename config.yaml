@@ -1,0 +1,43 @@
+seed: 20260610                       # global RNG seed; override per-run for ablations
+
+data:
+  dir: data/raw
+  datasets:
+    BANC: banc_626_edge_list.csv
+    FAFB: fafb_783_edge_list.csv
+    MANC: manc_1_2_1_edge_list.csv
+    MAOL: maol_1_1_edge_list.csv
+    MCNS: mcns_0_9_edge_list.csv
+  drop_self_loops: true
+  collapse_parallel_edges: true
+
+invariants:                          # Phase 3 — Weisfeiler–Leman (+ optional GDV)
+  wl_max_iterations: 5
+  min_datasets_per_color_class: 3
+  gdv_enabled: false                 # ORCA graphlet seeding; off by default (expensive)
+  gdv_sample_fraction: 0.05
+
+engine_a:                            # canonical
+  families: [reciprocal_clique, directed_star, complete_bipartite]
+  clique:   { restarts: 50, time_budget_s: 600 }
+  star:     { min_hub_out_degree: 50 }
+  biclique: { enabled: true, time_budget_s: 600 }
+
+engine_c:                            # greedy seed-and-extend
+  chosen_triple: [MANC, MAOL, MCNS]  # set after reviewing the Engine A frontier
+  seed_source: wl                    # wl | gdv
+  num_seeds: 200
+  enforce_weak_connectivity: true
+  vertex_order: degree_signature     # processing order for the greedy
+  time_budget_s: 1800
+
+engine_b:                            # exact on reduced instances (stretch)
+  enabled: true
+  reduce:  { target_candidate_nodes: 400, kcore_min: null }
+  solver:  { backend: mcsplit, connected: true, smallest_first: true, per_instance_timeout_s: 300 }
+
+bounds:
+  ablation_seeds: [1, 2, 3, 4, 5]
+
+paths:
+  results_dir: results
