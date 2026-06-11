@@ -165,3 +165,61 @@ implemented to green (full suite 23 passing).
   the exact induced-iso check must stay string-safe and memory-aware on them.
 - Motif `cut_prob` chosen lightly ([0,0,0.9]); MANC/MAOL motif census ran 3–6 min. Acceptable for a
   one-off characterization; revisit if re-run cost matters.
+
+---
+
+## Phase P2 — Verifier / oracle (`src/verify`) (2026-06-11)
+
+### What this phase did
+Built the independent grading oracle — the ground truth (A15) every candidate must pass before it is
+trusted. It mirrors FlyWire's grading: directed induced isomorphism under the row alignment plus weak
+connectivity, using plain dict/set adjacency and **no graph library**. Test-first: 18 tests written
+red, then implemented to green (full suite now 41 passing). Tagged `v0.1-verifier`.
+
+- `src/verify/check.py` — `verify_candidate(columns, rows, datasets) -> Report` (pure engine),
+  `read_candidate(path)`, `verify_file(path, cfg)` (header → config resolution → load via `src.io`),
+  and a `main()` CLI (`python -m src.verify.check --candidate … [--config …] [--json]`,
+  exit 0=PASS / 1=FAIL / 2=usage). `Report`/`CheckResult` are frozen dataclasses with `.format()`
+  (human) and `.to_dict()` (JSON).
+- Four checks, run **in order, short-circuiting at the first failure**, each with a precise reason:
+  (1) structural — exactly 3 distinct known datasets, **N ≥ 2** rows, 3 non-empty cells/row, no
+  duplicate id within a column; (2) existence — every id is a node in its dataset; (3) induced
+  isomorphism — for every ordered row pair (i,j), edge i→j present in all three or none (fail-fast,
+  names the offending pair + which datasets disagree); (4) weak connectivity — hand-rolled union-find
+  over the undirected projection, names the components on failure. A structure label
+  (clique / star / complete_bipartite / general) is detected once check 3 passes (informational only).
+
+### Key decisions (and why)
+- **No graph library — enforced, not just intended.** `check.py` imports only stdlib + `src.io`
+  (loader symbols, which never pull igraph). A subprocess test asserts neither `igraph` nor
+  `networkx` is in `sys.modules` after `import src.verify.check` (mirrors the P1 io guard). This is
+  the hard rule that keeps the oracle independent of every engine.
+- **Edge-presence primitive = `(u, v) in ds.edges` set membership** (coerce a list to a set once),
+  not per-node adjacency. O(1) lookups with zero per-node allocation, so the O(N²) pairwise checks
+  stay cheap on the 6 M-edge BANC/FAFB graphs (building full `build_adjacency` dicts there would be
+  O(E) memory for no benefit, since we only ever probe the N matched nodes).
+- **Row floor = N ≥ 2 as a hard check-1 failure** (A13), confirmed this session — chosen over the
+  spec's looser "≥1 row". A single neuron / edgeless set is a vacuous circuit; rejecting it
+  structurally (rather than flagging it) keeps the verifier faithful to the "no degenerate results"
+  grading intent. Weak connectivity then guarantees ≥1 edge for any N ≥ 2.
+- **Iso-check fail-fast.** The first offending ordered pair is reported (the brief/skill ask for "the
+  offending pair"); enumerating all violations is a trivial future flag, deliberately deferred.
+- **`verify_file` never loads the big graphs on a malformed header.** Datasets are loaded only after
+  the header passes a cheap "3 distinct names" gate; unknown/extra/duplicate headers are reported by
+  check 1 without touching `data/raw`.
+- **CLI smoke confirms the placeholder is rejected:** `python -m src.verify.check` on the empty
+  `network.csv` stub exits 1 with `expected 3 columns, got 0` — the oracle refuses the stub, as it
+  must until an engine emits a real candidate.
+
+### Outputs produced
+- `src/verify/check.py` (verifier + CLI)
+- `tests/test_verify.py` (18 tests: the 5 spec'd cases + boundary/ordering/structure/CLI/import-guard)
+- `docs/phase-log.md` (this entry); git tag `v0.1-verifier`
+
+### Open questions
+- `verify_file` / `load_dataset` resolve `data.dir` relative to CWD (inherited P1 caveat); the CLI is
+  expected to run from repo root. Revisit if any engine invokes the verifier from a result dir.
+- Real-data end-to-end (loading the actual ~6 M-edge graphs through `verify_file`) is exercised only
+  via toy datasets so far; the first genuine engine candidate will be the real load test.
+- Structure detection treats N==2 (a lone directed/reciprocal edge) as `general`; not exercised and
+  immaterial to pass/fail, but worth a note if a 2-node match is ever reported.
