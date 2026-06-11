@@ -2,6 +2,43 @@
 
 ---
 
+## Phase P0 — Assumptions ledger (2026-06-10)
+
+### What this phase did
+Read both challenge briefs (`docs/brief/Qualification Challenge.pdf`, 2026-06-02; and
+`docs/brief/Qualification Challenge Extension.pdf`, 2026-06-08) and wrote a self-contained, graded
+assumptions ledger at `docs/assumptions.md`: a precise restatement of the problem plus an explicit
+table of every assumption the brief leaves open, each with the decision taken and one sentence of
+justification.
+
+### Key decisions
+- **Graph model (A1–A6):** directed, unweighted (weights ignored per brief), simple — self-loops
+  removed, parallel edges collapsed. A neuron is "present" in a dataset iff it is an endpoint of ≥1
+  post-cleanup edge (only edge lists are provided; degree-0 nodes can't be in a weakly connected
+  circuit anyway, so the exclusion is lossless).
+- **Identifiers (A7–A8):** all IDs handled as strings (BANC/FAFB 18-digit root IDs overflow int64);
+  IDs are not shared across datasets → matching is purely structural.
+- **Correspondence (A9–A12):** "identical" = directed-graph isomorphism under the row alignment (the
+  CSV rows *are* the vertex bijection); weak connectivity checked on the undirected projection (per
+  the 2026-06-08 extension); target exactly the best **triple** of datasets (3-column format can't
+  encode a 4-/5-way match); no shared brain region required (extension).
+- **Degeneracy / optimality (A13–A14):** require N ≥ 2 non-degenerate; report N as a verified lower
+  bound + certificate, never a proven global optimum (problem is NP-hard).
+- **Verification (A15):** the independent verifier (`src/verify`) is the sole ground truth.
+
+### Outputs produced
+- `docs/assumptions.md` (15-entry ledger + problem restatement + out-of-scope section)
+
+### Open questions
+- A11: `config.yaml`'s `chosen_triple: [MANC, MAOL, MCNS]` is still tentative — confirm from the
+  Engine A frontier.
+- A5: node-presence-via-edge-endpoint assumes no isolated-node semantics are needed downstream;
+  revisit if any phase expects degree-0 neurons.
+- Next phase: build the verifier test-first (`src/verify/check.py`) before any engine emits a
+  candidate — currently `network.csv` is an empty stub and `src.verify.check` does not yet exist.
+
+---
+
 ## Phase S0 — Scaffolding (2026-06-10)
 
 ### What this phase did
