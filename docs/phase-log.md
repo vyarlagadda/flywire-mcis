@@ -291,3 +291,79 @@ suite now 53 passing).
 - WL refinement is a Python per-node loop (numpy slice + sort + blake2b); ~2–4 s/dataset at depth 5 here
   (largest: MCNS 6.2 M edges, 165 k nodes). Fine for one-off; revisit if depth or re-runs grow.
 - ORCA/GDV remains unimplemented behind the flag; wire it only if Engine C needs richer-than-WL seeds.
+
+---
+
+## Phase P4 — Engine A canonical (`src/engine_a`) (2026-06-11)
+
+### What this phase did
+Built Engine A — the **certified FLOOR** — and produced the first verified candidates. Three
+correct-by-construction families (equal-size instances are automatically isomorphic) solved per
+dataset, then a frontier assembled every (family × triple) and confirmed each through the verifier.
+Test-first: 10 tests written red, then to green (full suite now **63 passing**). The headline
+submission `network.csv` is now a **verified reciprocal 38-clique**. Tagged `v1.0-engineA-frontier`.
+
+- `src/engine_a/clique.py` — reciprocal clique on `to_reciprocal_igraph`: degeneracy+1 UB from
+  `coreness`; seeded randomized-greedy floor; exact `largest_cliques` on the coreness≥floor k-core in
+  a `spawn` worker bounded by `clique.time_budget_s`.
+- `src/engine_a/star.py` — pure out-/in-star (both orientations); leaves = an independent set of the
+  hub's *pure* neighbours via greedy + bounded O(E) (2,1)-swap; per-orientation time budget; hubs
+  scanned by descending degree with a `degree+1 ≤ best` break.
+- `src/engine_a/biclique.py` — pure directed K_{a,b} (gated on `biclique.enabled`); A-candidates =
+  `(∩_{b∈B} in[b]) − (∪_{b∈B} out[b])`; heuristic LB, time-budgeted.
+- `src/engine_a/frontier.py` — aligns three instances at the common size (clique: first N; star:
+  hub+leaves, shared orientation; biclique: min (a,b)), calls `verify_candidate`, keeps only PASS.
+- `src/engine_a/run.py` — CLI; per-dataset JSON, `summary.md`, `frontier.csv`, `certificates/`.
+
+### Key decisions (and why)
+- **Correct-by-construction + verifier-confirmed.** Each family guarantees induced isomorphism and
+  weak connectivity by shape; truncation to the min size stays in-family; every emitted certificate is
+  still independently checked by `src.verify`. N is a verified LOWER bound; the clique degeneracy+1 is
+  reported as a separate UPPER bound, never claimed as achieved.
+- **Greedy clique uses a precomputed static (coreness) key**, not a per-step `len(nbrs[v] & cand)`
+  rescan — the latter was O(seeds·k·|cand|·deg) and spun for >6 min on dense MANC; the fix makes each
+  step O(|cand|) and the whole clique pass ≤ 5.4 s on every dataset.
+- **Exact clique in a `spawn` worker joined with the time budget** (terminated on overrun → greedy
+  floor) — a hard wall-clock bound around igraph's C call without threading hazards.
+- **Pure-orientation stars/bicliques** so equal-size instances are *directed*-isomorphic (out- and
+  in-stars are NOT isomorphic to each other); the frontier therefore requires a shared orientation.
+- **Bounded (2,1)-swap** for the star IS: single O(E) tight-vertex pass per round, capped rounds,
+  skipped above `star.swap_max_nodes` (greedy is near-optimal on large sparse leaf sets). Star went
+  from a >7-min hang to ≤ 102 s/dataset.
+- **config:** `clique`/`biclique` `time_budget_s` 3600 → **300** (exact is a bonus over the greedy
+  floor); added `star.time_budget_s` and `star.swap_max_nodes`. All budgets stay in config.
+
+### Outputs produced
+- `src/engine_a/{clique,star,biclique,frontier,run}.py`; `tests/test_engine_a.py` (10 tests)
+- `results/engine_a/{clique,star,biclique}/*.json`, `frontier.csv`, `summary.md`,
+  `config.snapshot.yaml`, `certificates/*.csv` (**24 verifier-PASS** certificates)
+- `network.csv` ← reciprocal **38-clique** on (BANC, FAFB, MCNS), CLI-verified PASS
+- `config.yaml` engine_a budgets; git tag `v1.0-engineA-frontier`
+
+### Findings → results (best VERIFIED N per family)
+- **reciprocal_clique: N = 38** on **BANC+FAFB+MCNS** (10/10 triples pass). Per-dataset cliques (UB):
+  BANC 38 (50), FAFB 38 (48), MANC 28 (65), MAOL 12 (29), MCNS 41 (51) — all exact, ≤ 5.4 s. MAOL's
+  12 is the binding outlier (why MAOL triples cap at 12).
+- **directed_star: N = 1877** on FAFB+MAOL+MCNS (only **4/10** — BANC's best is an in-star while the
+  others are out-stars → 6 orientation-mismatch skips). Per-dataset: BANC 1107 (in), FAFB 2062, MANC
+  314, MAOL 1877, MCNS 2480. **Large but DEGENERATE** (a hub + thousands of mutually-disconnected
+  leaves) → not the submission.
+- **complete_bipartite: N = 15** on BANC+FAFB+MCNS (10/10). Per-dataset: BANC 15, FAFB 112, MANC 23,
+  MAOL 14, MCNS 77.
+- **Submission = the 38-clique** (a dense, biologically meaningful recurrent circuit) per the
+  weight-meaningful-over-degenerate rule; the star=1877 is recorded in the frontier, not submitted.
+
+### Most promising triples for Engine C / B
+- **BANC + FAFB + MCNS** — clique floor **38**, min clique UB **48** (headroom of 10), the three
+  whole-CNS sparse graphs, and the P1b motif-similarity winner. Engine C should seed-and-extend from
+  the verified 38-clique toward a larger *non-degenerate connected* circuit; Engine B can attempt
+  exact MCS on WL+k-core-reduced BANC/FAFB/MCNS around it. This empirically confirms the P1b
+  recommendation to set `engine_c.chosen_triple → [BANC, FAFB, MCNS]` (still not applied).
+
+### Open questions
+- **Star frontier coverage 4/10**: report BOTH orientations per dataset so the frontier can pick the
+  best COMMON orientation (recovers the 6 BANC in/out mismatches). Deferred — star is degenerate and
+  not the headline.
+- Clique exact never hit the 300 s budget (≤ 5.4 s everywhere); `restarts`/budget could rise if
+  pushing N, but the degeneracy gap (38 vs UB 48) suggests Engine C/B, not more clique search.
+- Biclique UB is left at 0 (no cheap non-trivial bound for max biclique); LB only, as intended.

@@ -1,0 +1,31 @@
+family,triple,n,structure,ok,reason,certificate
+directed_star,FAFB|MAOL|MCNS,1877,star,True,,certificates/directed_star__FAFB-MAOL-MCNS.csv
+directed_star,FAFB|MANC|MAOL,314,star,True,,certificates/directed_star__FAFB-MANC-MAOL.csv
+directed_star,FAFB|MANC|MCNS,314,star,True,,certificates/directed_star__FAFB-MANC-MCNS.csv
+directed_star,MANC|MAOL|MCNS,314,star,True,,certificates/directed_star__MANC-MAOL-MCNS.csv
+reciprocal_clique,BANC|FAFB|MCNS,38,clique,True,,certificates/reciprocal_clique__BANC-FAFB-MCNS.csv
+reciprocal_clique,BANC|FAFB|MANC,28,clique,True,,certificates/reciprocal_clique__BANC-FAFB-MANC.csv
+reciprocal_clique,BANC|MANC|MCNS,28,clique,True,,certificates/reciprocal_clique__BANC-MANC-MCNS.csv
+reciprocal_clique,FAFB|MANC|MCNS,28,clique,True,,certificates/reciprocal_clique__FAFB-MANC-MCNS.csv
+complete_bipartite,BANC|FAFB|MCNS,15,complete_bipartite,True,,certificates/complete_bipartite__BANC-FAFB-MCNS.csv
+reciprocal_clique,BANC|FAFB|MAOL,12,clique,True,,certificates/reciprocal_clique__BANC-FAFB-MAOL.csv
+reciprocal_clique,BANC|MANC|MAOL,12,clique,True,,certificates/reciprocal_clique__BANC-MANC-MAOL.csv
+reciprocal_clique,BANC|MAOL|MCNS,12,clique,True,,certificates/reciprocal_clique__BANC-MAOL-MCNS.csv
+reciprocal_clique,FAFB|MANC|MAOL,12,clique,True,,certificates/reciprocal_clique__FAFB-MANC-MAOL.csv
+reciprocal_clique,FAFB|MAOL|MCNS,12,clique,True,,certificates/reciprocal_clique__FAFB-MAOL-MCNS.csv
+reciprocal_clique,MANC|MAOL|MCNS,12,clique,True,,certificates/reciprocal_clique__MANC-MAOL-MCNS.csv
+complete_bipartite,MANC|MAOL|MCNS,12,complete_bipartite,True,,certificates/complete_bipartite__MANC-MAOL-MCNS.csv
+complete_bipartite,BANC|FAFB|MANC,8,complete_bipartite,True,,certificates/complete_bipartite__BANC-FAFB-MANC.csv
+complete_bipartite,BANC|FAFB|MAOL,8,complete_bipartite,True,,certificates/complete_bipartite__BANC-FAFB-MAOL.csv
+complete_bipartite,BANC|MANC|MAOL,8,complete_bipartite,True,,certificates/complete_bipartite__BANC-MANC-MAOL.csv
+complete_bipartite,BANC|MANC|MCNS,8,complete_bipartite,True,,certificates/complete_bipartite__BANC-MANC-MCNS.csv
+complete_bipartite,BANC|MAOL|MCNS,8,complete_bipartite,True,,certificates/complete_bipartite__BANC-MAOL-MCNS.csv
+complete_bipartite,FAFB|MANC|MAOL,8,complete_bipartite,True,,certificates/complete_bipartite__FAFB-MANC-MAOL.csv
+complete_bipartite,FAFB|MANC|MCNS,8,complete_bipartite,True,,certificates/complete_bipartite__FAFB-MANC-MCNS.csv
+complete_bipartite,FAFB|MAOL|MCNS,8,complete_bipartite,True,,certificates/complete_bipartite__FAFB-MAOL-MCNS.csv
+directed_star,BANC|FAFB|MANC,0,,False,"orientation mismatch ['in', 'out']",
+directed_star,BANC|FAFB|MAOL,0,,False,"orientation mismatch ['in', 'out']",
+directed_star,BANC|FAFB|MCNS,0,,False,"orientation mismatch ['in', 'out']",
+directed_star,BANC|MANC|MAOL,0,,False,"orientation mismatch ['in', 'out']",
+directed_star,BANC|MANC|MCNS,0,,False,"orientation mismatch ['in', 'out']",
+directed_star,BANC|MAOL|MCNS,0,,False,"orientation mismatch ['in', 'out']",
