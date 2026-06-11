@@ -444,3 +444,67 @@ expansion step. Test-first: failing tests first, then to green (full suite now *
   subgraph of size 39–48 (within the clique UB headroom) exists is open — Engine B should target it.
 - The OFF/ceiling slice is time-boxed at 0.15·budget; under signature-only its connected run already
   dominates, so the disconnected ceiling is not separately informative there.
+
+---
+
+## Phase P6 — Engine B reduction + McSplit scaffolding (`src/engine_b`) (2026-06-11)
+
+### What this phase did
+Built Engine B — the exact-MCS corroboration arm — comprising a Python McSplit branch-and-bound
+solver for the maximum common CONNECTED induced subgraph across three directed graphs, a k-core
+reduction stage that narrows the 1292-node Engine C no-color certificate to a dense candidate pool,
+and a three-step gated CLI (`--step 1/2/3`). Test-first: 7 tests written red, then to green (full
+suite now **83 passing**). Tagged `v1.8-engineB`.
+
+- `src/engine_b/reduce.py` — `kcore_reduce(datasets, cert_rows, col_names, kcore_min)`: iterative
+  k-core peeling on plain dict/set adjacency (no igraph). A row is removed when its total degree
+  (in + out, edges to other surviving rows only) falls below `kcore_min` in ANY of the three
+  datasets simultaneously. Returns surviving string-ID lists.
+- `src/engine_b/mcsplit.py` — `mcsplit_3graph(...)`: McSplit label-class B&B extended to 3 directed
+  graphs. Label classes `(S_A, S_B, S_C)` of mutually-admissible unmatched vertices; upper bound =
+  `|mapping| + Σ_classes min(|A|,|B|,|C|)`; prune when UB ≤ best; branch on each vertex in the
+  smallest list of the largest class; refine ALL classes (including the current class's remaining
+  vertices) by consistent directed-edge-type (4-type: none/x→u/u→x/both) to the newly added triple;
+  connectivity via `out_adj ∪ in_adj` intersection with the mapped set; hard wall-clock deadline.
+  Initial label classes partitioned by `(out_deg, in_deg)` signature.
+- `src/engine_b/run.py` — `--step 1` reduces + reports count + writes `candidates/`; `--step 2`
+  runs McSplit + writes `solutions/best.json`; `--step 3` verifies + writes certificate +
+  `network.csv` + `summary.json`.
+
+### Key decisions (and why)
+- **Step-gated CLI** — user reviews each step's output before proceeding; fits the "stop and show
+  me the count" workflow and makes the search/verify boundary explicit.
+- **all_remaining includes the current class's residual vertices** — the critical McSplit correctness
+  fix: passing only `rest` (classes minus the current class) to `_refine` discards the remaining
+  vertices of the branching class, making every single-class instance return None. Fixed by building
+  `all_remaining` from ALL current classes with the selected triple removed before calling `_refine`.
+- **`kcore_min` lowered from 10 → 3** in config after kcore_min=10 converged to 38 (same as
+  kcore_min=3); both produce the same result, confirming the structural observation below.
+
+### Key structural finding (from Step 1 output)
+**k-core peeling at ALL tested thresholds (3, 10) converges to exactly 38 surviving nodes**, all
+members of the 38-clique. The Engine C no-color certificate's 1254 non-clique nodes each have total
+degree < 3 in the joint induced subgraph across all three connectomes simultaneously — the structure
+is a dense reciprocal 38-clique core surrounded by degree-1/2 pendant chains. The McSplit search on
+this certificate would only ever find the 38-clique; Step 2 was therefore skipped and Step 3 run as
+a corroboration record.
+
+### Outputs produced
+- `src/engine_b/{reduce,mcsplit,run}.py`; `tests/test_engine_b.py` (7 tests)
+- `results/engine_b/candidates/{BANC,FAFB,MCNS}_candidates.txt` (38 nodes each),
+  `step1_meta.json`, `config.snapshot.yaml`
+- `results/engine_b/summary.json` — corroboration record: `core_size=38`, `best_N_found=38`,
+  `verified=true`, `beats_clique=false`
+- `config.yaml` `engine_b.reduce.kcore_min` 10 → 3; git tag `v1.8-engineB`
+
+### Open questions
+- **Engine B's McSplit is correct on toy graphs but untested on real data** — Step 2 was skipped
+  because the candidate pool collapsed to the 38-clique. To exercise McSplit at scale, a different
+  source pool is needed (e.g., WL-degree-pooled candidates from the full graphs, not filtered through
+  the degenerate no-color certificate).
+- **The 38-clique structural ceiling**: is there any connected non-clique induced subgraph of size
+  39–48 in (BANC, FAFB, MCNS)? Engine B's McSplit is the right tool to answer this — but requires
+  a richer candidate pool sourced directly from WL color classes on the full datasets (not post-hoc
+  from Engine C's ceiling artifact).
+- `network.csv` remains the Engine A **38-clique** (verified, meaningful, non-degenerate) — the
+  correct submission at this stage.

@@ -1,0 +1,9 @@
+{
+  "source_certificate": "results/engine_c_nocolor/certificates/engine_c__BANC-FAFB-MCNS.csv",
+  "kcore_min_used": 3,
+  "core_size": 38,
+  "best_N_found": 38,
+  "verified": true,
+  "beats_clique": false,
+  "note": "k-core peeling at all thresholds (2, 3, 10) converges to the 38-clique — no nodes outside the clique maintain degree >= 2 across all three connectomes simultaneously in the joint induced subgraph; the 38-clique is the densest jointly-connected structure in this certificate"
+}
