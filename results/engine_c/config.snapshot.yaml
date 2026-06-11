@@ -38,7 +38,6 @@ engine_c:                            # greedy seed-and-extend
   enforce_weak_connectivity: true
   vertex_order: degree_signature     # processing order for the greedy
   time_budget_s: 3600
-  seed_color_key: true               # shallow-WL color in the hard step key; false = advisory only
   candidate_cap: 50000               # max candidate triples examined per growth step (hub guard)
   boundary_cap: 200000               # max boundary nodes grouped per step (deterministic subsample)
   off_pool_cap: 20000                # connectivity-OFF jump-pool size for the N-ceiling reference

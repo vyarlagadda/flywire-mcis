@@ -1,0 +1,10 @@
+{
+  "seed_index": 0,
+  "kind": "clique_warmstart",
+  "n": 1292,
+  "ok": true,
+  "structure": "general",
+  "failed_check": null,
+  "stopped_reason": "deadline",
+  "wall_clock_s": 511.1139023329597
+}

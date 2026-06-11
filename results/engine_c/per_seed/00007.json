@@ -1,0 +1,10 @@
+{
+  "seed_index": 7,
+  "kind": "wl",
+  "n": 1,
+  "ok": false,
+  "structure": "",
+  "failed_check": 1,
+  "stopped_reason": "no_extension",
+  "wall_clock_s": 9.125098586082458e-06
+}

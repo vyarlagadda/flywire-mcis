@@ -367,3 +367,80 @@ submission `network.csv` is now a **verified reciprocal 38-clique**. Tagged `v1.
 - Clique exact never hit the 300 s budget (≤ 5.4 s everywhere); `restarts`/budget could rise if
   pushing N, but the degeneracy gap (38 vs UB 48) suggests Engine C/B, not more clique search.
 - Biclique UB is left at 0 (no cheap non-trivial bound for max biclique); LB only, as intended.
+
+---
+
+## Phase P5 — Engine C greedy seed-and-extend (`src/engine_c`) (2026-06-11)
+
+### What this phase did
+Built Engine C — the **workhorse**: a connectivity-constrained greedy seed-and-extend on the chosen
+triple **BANC + FAFB + MCNS**, with the EXACT induced-directed-isomorphism check inline at every
+expansion step. Test-first: failing tests first, then to green (full suite now **76 passing**). Tagged
+`v1.5-engineC`.
+
+- `src/engine_c/signature.py` — the incremental **connection-signature** substrate. A node's signature
+  vs a K-row mapping is a 2K-bit big-int (bit `2m` = node→member_m, bit `2m+1` = member_m→node);
+  `add_member` sets the two new bits only on the added member's neighbors (O(deg), append-only). A
+  candidate triple is induced-iso-admissible iff `sig_BANC(a) == sig_FAFB(b) == sig_MCNS(c)`. Guarded
+  by `test_incremental_equals_full` (incremental ≡ brute-force 2K-bit recompute).
+- `src/engine_c/seeds.py` — `resolve_seed_source` (gdv→wl graceful fallback, no orca binary),
+  `compute_wl_colors` (shallow depth-1 seeds + deep depth-5 advisory filter), `generate_seeds`
+  (deterministic triples from shallow color classes), and `clique_seed` (loads Engine A's verified
+  38-clique certificate as a full warm-start mapping).
+- `src/engine_c/grow.py` — `grow_from_seed`: rebuilds boundary groups each step (they mutate on every
+  admission), admits the single best triple by a deterministic lexicographic `score` (deep-match,
+  shallow-match, −degree-spread, min future-boundary, smallest-id), one admission per step.
+- `src/engine_c/run.py` — CLI orchestrator mirroring Engine A: WL + adjacency once, clique warm-start
+  prepended to WL seeds, ON + connectivity-OFF tracks, every kept result re-verified by `src.verify`,
+  artifacts under `results/engine_c/`.
+
+### Key decisions (and why)
+- **Correctness backbone — incremental admission is exact.** Appending a row creates only new ordered
+  pairs vs prior rows, so checking the new row's all-or-none agreement (the signature equality) is
+  necessary AND sufficient to keep the partial map an induced isomorphism — exactly the verifier's
+  check-3 semantics. No K×K rescan; per-step work is O(boundary).
+- **Adjacency built once, fresh state per seed** (`fresh_state`) — sharing the immutable O(E)
+  adjacency across all seeds instead of rebuilding it `num_seeds` times.
+- **GDV requested but unavailable** → recorded `seed_source_requested=gdv` /
+  `seed_source_effective=wl`, never crashes.
+- **Warm-start from the 38-clique** (user decision) guarantees the connected best never regresses below
+  the certified floor.
+- **The step key is the pivotal knob — added `seed_color_key` (default true).** With shallow-WL color
+  in the *hard* key, the necessary filter is correct but, across three genuinely non-isomorphic
+  connectomes, blocks **every** cold-seed extension (all 17 cold seeds grew to N=1). Demoting color to
+  an *advisory score term* (`--no-color-key`) keeps the signature check — which alone guarantees
+  induced-iso, the verifier remains the authority — but is far more permissive.
+
+### Findings → results (every N independently re-verified by `src.verify`)
+- **Color-keyed (principled default) — N = 38, corroboration.** `python -m src.engine_c.run` →
+  best connected **38** (the clique warm-start; greedy could not add a 39th globally-consistent triple),
+  disconnected ceiling **43**. Cold WL seeds all stall at N=1 — empirical proof of how discriminating
+  cross-connectome WL is (the P3 "great separator"). Engine C **independently corroborates** Engine A's
+  38-clique floor. `results/engine_c/`.
+- **Signature-only ablation — N ≥ 1292 but DEGENERATE.** `--no-color-key` from the clique warm-start
+  grew to a verified connected **N=1292** (still growing when the 600 s budget hit). Structure analysis:
+  density **0.0016**, **median total degree = 1**, min 1, mean 4.1, max 76, 712 reciprocal pairs —
+  i.e. a small dense core of ~degree-76 hubs surrounded by hundreds of degree-1 pendant leaves. This is
+  the hub-and-spoke **degeneracy** CLAUDE.md weights AGAINST (cf. Engine A's star=1877). Recorded as a
+  ceiling, NOT submitted. `results/engine_c_nocolor/`.
+- **Submission unchanged:** `network.csv` stays Engine A's dense, meaningful **38-clique** (every node
+  degree 37, fully reciprocal) per the deliberate "smaller meaningful over larger degenerate" rule. The
+  1292-vs-38 split is a clean empirical demonstration of the computation-to-optimization / meaningful-
+  vs-degenerate gap that the README/science track foregrounds.
+
+### Outputs produced
+- `src/engine_c/{signature,seeds,grow,run}.py`; `tests/test_engine_c.py` (13 tests)
+- `results/engine_c/` (color-keyed, N=38, ceiling 43) and `results/engine_c_nocolor/` (signature-only,
+  N=1292 degenerate ceiling) — each with `best.json`, `best_disconnected.json`, `certificates/`,
+  `frontier.csv`, `summary.md`, `seeds.json`, `config.snapshot.yaml`
+- `config.yaml` engine_c: `seed_color_key`, `candidate_cap`, `boundary_cap`, `off_pool_cap`; git tag
+  `v1.5-engineC`
+
+### Open questions
+- **Extract a meaningful dense sub-core from the 1292** (it contains a real recurrent core under the
+  pendant leaves) — this is Engine B territory (exact MCS on a k-core/WL-reduced instance around the
+  hub set), the natural next push past 38 toward a larger *non-degenerate* circuit.
+- The color-keyed greedy can't grow the 38-clique to 39; whether a **non-clique** connected induced
+  subgraph of size 39–48 (within the clique UB headroom) exists is open — Engine B should target it.
+- The OFF/ceiling slice is time-boxed at 0.15·budget; under signature-only its connected run already
+  dominates, so the disconnected ceiling is not separately informative there.

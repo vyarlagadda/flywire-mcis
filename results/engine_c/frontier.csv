@@ -1,0 +1,3 @@
+engine,triple,n,structure,ok,reason,certificate,connectivity
+engine_c,BANC|FAFB|MCNS,38,clique,True,,certificates/engine_c__BANC-FAFB-MCNS.csv,weakly_connected
+engine_c,BANC|FAFB|MCNS,43,general,False,"weakly disconnected: 6 components (sizes [38, 1, 1, 1, 1, 1]); rows 0 and 38 are in different components",,disconnected_ceiling
