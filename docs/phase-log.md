@@ -561,3 +561,56 @@ this triple lies in [38, 48].
   Engine C certificate) is the correct tool to narrow this gap.
 - **`scripts/run_all` engine_c_nocolor step** uses `--no-color-key` and `--no-off-ablation`
   flags; these are defined in `engine_c/run.py` argparse and confirmed working.
+
+---
+
+## Phase P8a — Ingest & Annotate FAFB Neurons (2026-06-12)
+
+### What this phase did
+Added `src/annotate.py` — a pure-pandas script that joins the three certified subgraph
+certificates against the Codex FAFB annotation files (consolidated_cell_types, classification,
+neurons, connections_princeton) to produce per-neuron annotation tables and internal synapse
+statistics for each subgraph.
+
+### Key decisions
+- **Pure-pandas, no graph library:** the annotation step is a table join, not a graph computation;
+  keeping it library-agnostic mirrors the verifier's design philosophy and makes it trivially
+  portable.
+- **`additional_type(s)` rename:** the Codex file uses a column name with literal parentheses
+  (`additional_type(s)`); this is renamed to `additional_types` in output to avoid downstream
+  quoting issues.
+- **usecols for connections:** `connections_princeton.csv.gz` is 68 MB; loading only the four
+  required columns (`pre_root_id`, `post_root_id`, `neuropil`, `syn_count`) halves peak memory.
+- **Left-join strategy:** all annotation tables are left-joined onto the FAFB ID set so that
+  unannotated neurons still appear in the output with NaN fields; the script never crashes on
+  missing matches.
+- **mean_syn_per_edge defined per directed pair:** synapse rows are first grouped by
+  (pre_root_id, post_root_id) and summed before taking the mean, so multi-neuropil connections
+  between the same pair are treated as one edge.
+- **Annotation tables loaded once and shared across all three certificates** to avoid 3× I/O on
+  the large connections file.
+
+### Outputs produced
+- `src/annotate.py` — annotation script (load_fafb_ids, join_annotations, compute_synapse_stats,
+  format_summary, _load_annotation_tables, main CLI)
+- `tests/test_annotate.py` — 7 unit tests using in-memory fixtures; all pass
+- `results/biology/clique_38_annotated.csv` — 38 rows; 100% annotated
+- `results/biology/star_1877_annotated.csv` — 1877 rows; 100% annotated
+- `results/biology/nocolor_1292_annotated.csv` — 1292 rows; 99.54% annotated (6 unannotated)
+- `results/biology/annotation_summary.txt` — per-subgraph summary with type counts, synapse stats
+
+### Key findings
+- **clique_38 (BANC+FAFB+MCNS):** 38 neurons, 100% annotated; all central, intrinsic, right-side;
+  AL_R neuropil dominates internal synapses (86,258 / 86,275 total); mean 61.4 syn/edge — a dense
+  antennal-lobe recurrent circuit.
+- **star_1877 (FAFB+MAOL+MCNS):** 1877 neurons, 100% annotated; 1876/1877 are optic neurons
+  (T4/T5 family), mostly left side; mean 16.9 syn/edge — a large motion-detection circuit.
+- **nocolor_1292 (BANC+FAFB+MCNS, Engine C):** 1292 neurons, 99.54% annotated; heterogeneous
+  (central + optic + visual_projection); mean 36.5 syn/edge; 6 FAFB root_ids absent from all
+  annotation tables.
+
+### Open questions
+- The 6 unannotated FAFB neurons in nocolor_1292 may be neurons added after the Codex snapshot;
+  worth cross-checking against a newer FAFB proofreading export.
+- science.md biological interpretation section should discuss which of the three subgraphs is most
+  biologically parsimonious as the final submission candidate.

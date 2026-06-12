@@ -1,0 +1,39 @@
+root_id,primary_type,additional_types,super_class,flow,side,nt_type,nt_type_score
+720575940622338742,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940619071005,DM1_lPN,,central,intrinsic,right,ACH,0.92
+720575940637136752,lLN2X04,,central,intrinsic,right,,0.0
+720575940637623780,lLN2X03,lLN2T_a,central,intrinsic,right,SER,0.36
+720575940640541091,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,SER,0.38
+720575940640803200,lLN2F_a,,central,intrinsic,right,,0.0
+720575940610161091,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940628059978,lLN2X11,,central,intrinsic,right,SER,0.43
+720575940640415859,lLN2X07,lLN2R_a,central,intrinsic,right,ACH,0.45
+720575940621542747,lLN1_a,,central,intrinsic,right,SER,0.44
+720575940621585279,lLN2X12,,central,intrinsic,right,,0.0
+720575940612347571,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940646576436,lLN2T_c,,central,intrinsic,right,SER,0.39
+720575940605758142,lLN2F_a,,central,intrinsic,right,,0.0
+720575940648633988,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940612637554,lLN2X12,,central,intrinsic,right,,0.0
+720575940629792732,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940622650879,lLN2X12,,central,intrinsic,right,ACH,0.42
+720575940660217729,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940613804259,lLN2T_c,,central,intrinsic,right,SER,0.34
+720575940630225403,lLN2X12,,central,intrinsic,right,ACH,0.41
+720575940616758322,lLN2X04,,central,intrinsic,right,,0.0
+720575940616908177,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940624832743,lLN2X12,,central,intrinsic,right,,0.0
+720575940623137997,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940617299131,lLN2X05,lLN2T_a,central,intrinsic,right,SER,0.38
+720575940614956072,v2LN30,,central,intrinsic,right,,0.0
+720575940622726271,DP1m_adPN,,central,intrinsic,right,ACH,0.94
+720575940625584484,lLN2X10,,central,intrinsic,right,ACH,0.45
+720575940618112310,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940625585508,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940615708482,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940623792648,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940631603281,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940626342174,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940616197819,lLN2X05,lLN2T_a,central,intrinsic,right,SER,0.4
+720575940631704716,lLN1_bc,"lLN1_b, lLN1_c",central,intrinsic,right,,0.0
+720575940624435128,lLN2X11,,central,intrinsic,right,SER,0.48

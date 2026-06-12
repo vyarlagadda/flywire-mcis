@@ -1,0 +1,118 @@
+=== clique_38 ===
+N = 38
+Annotated fraction (primary_type not null): 100.00%
+primary_type counts:
+  lLN1_bc: 16
+  lLN2X12: 5
+  lLN2X04: 2
+  lLN2F_a: 2
+  lLN2X11: 2
+  lLN2T_c: 2
+  lLN2X05: 2
+  DM1_lPN: 1
+  lLN2X03: 1
+  lLN2X07: 1
+super_class counts:
+  central: 38
+flow counts:
+  intrinsic: 38
+side counts:
+  right: 38
+nt_type counts:
+  SER: 9
+  ACH: 6
+total_internal_synapses: 86275
+mean_syn_per_edge: 61.36
+Top 3 neuropils by internal synapse count:
+  AL_R: 86258
+  LH_R: 5
+  AVLP_R: 4
+Unannotated root_ids: none
+
+=== star_1877 ===
+N = 1877
+Annotated fraction (primary_type not null): 100.00%
+primary_type counts:
+  T5d: 408
+  T5c: 370
+  T5b: 243
+  T4d: 238
+  T5a: 205
+  T4c: 198
+  T4a: 125
+  T4b: 80
+  LMa5: 2
+  CT1: 1
+super_class counts:
+  optic: 1876
+  ascending: 1
+flow counts:
+  intrinsic: 1876
+  afferent: 1
+side counts:
+  left: 1875
+  right: 2
+nt_type counts:
+  ACH: 1517
+  GABA: 21
+  GLUT: 14
+  SER: 1
+total_internal_synapses: 31721
+mean_syn_per_edge: 16.91
+Top 3 neuropils by internal synapse count:
+  LO_L: 24944
+  ME_L: 6752
+  LOP_L: 19
+Unannotated root_ids: none
+
+=== nocolor_1292 ===
+N = 1292
+Annotated fraction (primary_type not null): 99.54%
+primary_type counts:
+  lLN1_bc: 16
+  KCapbp-ap2: 14
+  Tm20: 8
+  FC1A: 7
+  Tm4: 7
+  T5a: 7
+  Tm16: 6
+  TmY31: 6
+  KCab-p: 6
+  lLN2X12: 5
+super_class counts:
+  central: 1036
+  optic: 143
+  visual_projection: 57
+  ascending: 26
+  sensory: 17
+  descending: 8
+  visual_centrifugal: 3
+  sensory_ascending: 2
+flow counts:
+  intrinsic: 1239
+  afferent: 45
+  efferent: 8
+side counts:
+  right: 861
+  left: 429
+  center: 2
+nt_type counts:
+  ACH: 734
+  GLUT: 317
+  GABA: 135
+  SER: 18
+  DA: 12
+  OCT: 1
+total_internal_synapses: 97322
+mean_syn_per_edge: 36.45
+Top 3 neuropils by internal synapse count:
+  AL_R: 86302
+  SLP_R: 1459
+  LH_R: 877
+Unannotated root_ids (6):
+  720575940622307148
+  720575940604211628
+  720575940621253056
+  720575940628030972
+  720575940625841241
+  720575940626885757
