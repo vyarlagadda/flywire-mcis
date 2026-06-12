@@ -1,0 +1,71 @@
+[
+  {
+    "label": "clique_38",
+    "N": 38,
+    "components": {
+      "IDENTIFIABILITY": 20.0,
+      "TYPE_COHERENCE": 8.5858,
+      "NT_COHERENCE": 4.7368,
+      "ANATOMICAL_LOCALITY": 19.9961,
+      "CIRCUIT_RICHNESS": 20.0
+    },
+    "total": 73.3187,
+    "top_5_primary_types": {
+      "lLN1_bc": 16,
+      "lLN2X12": 5,
+      "lLN2X04": 2,
+      "lLN2F_a": 2,
+      "lLN2X11": 2
+    },
+    "dominant_nt": "SER",
+    "top_neuropil": "AL_R",
+    "reciprocal_pairs": 703,
+    "total_internal_synapses": 86275
+  },
+  {
+    "label": "star_1877",
+    "N": 1877,
+    "components": {
+      "IDENTIFIABILITY": 20.0,
+      "TYPE_COHERENCE": 14.6618,
+      "NT_COHERENCE": 16.1641,
+      "ANATOMICAL_LOCALITY": 15.7271,
+      "CIRCUIT_RICHNESS": 0.0
+    },
+    "total": 66.553,
+    "top_5_primary_types": {
+      "T5d": 408,
+      "T5c": 370,
+      "T5b": 243,
+      "T4d": 238,
+      "T5a": 205
+    },
+    "dominant_nt": "ACH",
+    "top_neuropil": "LO_L",
+    "reciprocal_pairs": 0,
+    "total_internal_synapses": 31721
+  },
+  {
+    "label": "nocolor_1292",
+    "N": 1292,
+    "components": {
+      "IDENTIFIABILITY": 19.9071,
+      "TYPE_COHERENCE": 1.2813,
+      "NT_COHERENCE": 11.3622,
+      "ANATOMICAL_LOCALITY": 17.7354,
+      "CIRCUIT_RICHNESS": 11.0217
+    },
+    "total": 61.3077,
+    "top_5_primary_types": {
+      "lLN1_bc": 16,
+      "KCapbp-ap2": 14,
+      "Tm20": 8,
+      "FC1A": 7,
+      "Tm4": 7
+    },
+    "dominant_nt": "ACH",
+    "top_neuropil": "AL_R",
+    "reciprocal_pairs": 712,
+    "total_internal_synapses": 97322
+  }
+]

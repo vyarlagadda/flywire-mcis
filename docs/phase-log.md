@@ -614,3 +614,71 @@ statistics for each subgraph.
   worth cross-checking against a newer FAFB proofreading export.
 - science.md biological interpretation section should discuss which of the three subgraphs is most
   biologically parsimonious as the final submission candidate.
+
+---
+
+## Phase P8b — Score Biological Significance (`src/score_biology.py`) (2026-06-12)
+
+### What this phase did
+Added `src/score_biology.py` — a pure-pandas, no-graph-library scorer that computes a
+five-component biological significance score (max 100) for each certified FAFB subgraph,
+prints a side-by-side table, and writes `results/biology/scores.json`. Test-first: 20 tests
+written red, then implemented to green (full suite now **138 passing**).
+
+### Five components (0–20 pts each)
+1. **IDENTIFIABILITY** — fraction with non-null `primary_type` × 20
+2. **TYPE_COHERENCE** — `20 * (1 − H / log2(N))` where H = Shannon entropy of `primary_type`
+   distribution; all-same → 20, all-distinct → 0
+3. **NT_COHERENCE** — `20 * (dominant nt_type count / N)`
+4. **ANATOMICAL_LOCALITY** — `20 * (top-neuropil synapse count / total_internal_synapses)`
+5. **CIRCUIT_RICHNESS** — `min(20, 20 * reciprocal_pair_count / N)` where reciprocal pairs
+   are unordered {A,B} s.t. A→B and B→A both in internal FAFB connections
+
+### Key decisions (and why)
+- **Reuse `compute_synapse_stats` from `src.annotate`** (public function, DRY) for
+  ANATOMICAL_LOCALITY; load `connections_princeton.csv.gz` directly with `usecols` to
+  avoid pulling the three annotation tables unnecessarily.
+- **`count_reciprocal_pairs` uses a directed-edge set + `b > a` guard** to count each
+  unordered pair once — O(|internal edges|) with no graph library.
+- **TYPE_COHERENCE entropy uses `dropna()` on `primary_type`** — unannotated neurons are
+  excluded from the distribution (IDENTIFIABILITY already penalizes them); `max(0, ...)` guard
+  ensures the formula can't go negative from floating-point rounding.
+- **`round(v, 4)`** on all component scores in JSON output avoids spurious precision in
+  serialization while keeping sub-0.01 differences visible.
+
+### Outputs produced
+- `src/score_biology.py` — scorer + CLI (`python -m src.score_biology`)
+- `tests/test_score_biology.py` — 20 unit + integration tests
+- `results/biology/scores.json` — all component scores, totals, and metadata per subgraph
+
+### Results (scores.json)
+
+| Component            | clique_38 | star_1877 | nocolor_1292 |
+|----------------------|-----------|-----------|--------------|
+| IDENTIFIABILITY      | 20.00     | 20.00     | 19.91        |
+| TYPE_COHERENCE       | 8.59      | 14.66     | 1.28         |
+| NT_COHERENCE         | 4.74      | 16.16     | 11.36        |
+| ANATOMICAL_LOCALITY  | 20.00     | 15.73     | 17.74        |
+| CIRCUIT_RICHNESS     | 20.00     | 0.00      | 11.02        |
+| **TOTAL**            | **73.32** | **66.55** | **61.31**    |
+
+**clique_38 wins overall (73.32/100)** — dominated by perfect ANATOMICAL_LOCALITY (all AL_R)
+and perfect CIRCUIT_RICHNESS (703 reciprocal pairs / 38 nodes, capped). TYPE_COHERENCE is
+modest (multiple lLN types) and NT_COHERENCE is low (SER:9 out of 38, many unannotated).
+**star_1877 is second (66.55)** — high NT_COHERENCE (ACH dominates 81%) and TYPE_COHERENCE
+(T4/T5 families), but CIRCUIT_RICHNESS = 0 (pure out-star). **nocolor_1292 is last (61.31)**
+— heterogeneous types and mixed anatomy drive low TYPE_COHERENCE (1.28) and moderate scores
+elsewhere. nocolor_1292's reciprocal_pairs = 712 (confirmed: the 38-clique core contributes
+703 of these). **Submission stays clique_38**, which leads on every dimension except
+NT_COHERENCE and TYPE_COHERENCE (both of which improve when the circuit is biologically
+specific rather than large and heterogeneous).
+
+### Open questions
+- TYPE_COHERENCE for clique_38 (8.59) could improve if the lLN subtypes are collapsed to
+  a single parent type — worth exploring in science.md narrative (the 38-node circuit is
+  a coherent lLN population even though it spans multiple subtypes).
+- NT_COHERENCE for clique_38 (4.74) is low because most lLN1_bc neurons lack nt_type
+  annotation; the dominant SER (9/38) understates the true coherence. Flag this caveat
+  in science.md.
+- scores.json provides all inputs needed to write the science.md comparison section —
+  next phase.
