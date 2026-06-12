@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+"""Pipeline orchestrator: runs all flywire-mcis phases in order.
+
+    python scripts/run_all --config config.yaml [--skip step1,step2,...]
+
+Steps (in order):
+  characterize       -- python -m src.characterize.run --all
+  invariants         -- python -m src.invariants.run --all
+  engine_a           -- python -m src.engine_a.run --all
+  engine_c           -- python -m src.engine_c.run
+  engine_c_nocolor   -- python -m src.engine_c.run --no-color-key --out results/engine_c_nocolor
+  engine_b_step1     -- python -m src.engine_b.run --step 1
+  engine_b_step2     -- python -m src.engine_b.run --step 2
+  engine_b_step3     -- python -m src.engine_b.run --step 3
+  verify             -- python -m src.verify.check --candidate network.csv
+  bounds             -- python -m src.bounds.run
+
+Sets FLYWIRE_CONFIG env var for all subprocess calls so every module sees the correct config.
+Stops on the first failing step (non-zero exit code).
+Prints step name + elapsed wall-clock time for every executed step.
+"""
+from __future__ import annotations
+
+import argparse
+import os
+import subprocess
+import sys
+import time
+
+
+_STEPS: list[tuple[str, list[str]]] = [
+    ("characterize",     ["python", "-m", "src.characterize.run", "--all"]),
+    ("invariants",       ["python", "-m", "src.invariants.run", "--all"]),
+    ("engine_a",         ["python", "-m", "src.engine_a.run", "--all"]),
+    ("engine_c",         ["python", "-m", "src.engine_c.run"]),
+    ("engine_c_nocolor", ["python", "-m", "src.engine_c.run",
+                          "--no-color-key", "--out", "results/engine_c_nocolor",
+                          "--no-off-ablation"]),
+    ("engine_b_step1",   ["python", "-m", "src.engine_b.run", "--step", "1"]),
+    ("engine_b_step2",   ["python", "-m", "src.engine_b.run", "--step", "2"]),
+    ("engine_b_step3",   ["python", "-m", "src.engine_b.run", "--step", "3"]),
+    ("verify",           ["python", "-m", "src.verify.check", "--candidate", "network.csv"]),
+    ("bounds",           ["python", "-m", "src.bounds.run"]),
+]
+
+_ALL_STEP_NAMES = [name for name, _ in _STEPS]
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "--config",
+        default="config.yaml",
+        help="Path to config.yaml (sets FLYWIRE_CONFIG for all steps). Default: config.yaml",
+    )
+    parser.add_argument(
+        "--skip",
+        default="",
+        help="Comma-separated step names to skip. Valid names: "
+             + ", ".join(_ALL_STEP_NAMES),
+    )
+    args = parser.parse_args(argv)
+
+    skip_set = {s.strip() for s in args.skip.split(",") if s.strip()}
+
+    env = os.environ.copy()
+    env["FLYWIRE_CONFIG"] = os.path.abspath(args.config)
+
+    print(f"[run_all] FLYWIRE_CONFIG={env['FLYWIRE_CONFIG']}", flush=True)
+    if skip_set:
+        print(f"[run_all] skipping: {', '.join(sorted(skip_set))}", flush=True)
+
+    total_start = time.perf_counter()
+    for step_name, cmd in _STEPS:
+        if step_name in skip_set:
+            print(f"[run_all] SKIP  {step_name}", flush=True)
+            continue
+
+        t0 = time.perf_counter()
+        print(f"[run_all] START {step_name} ...", flush=True)
+        result = subprocess.run(cmd, env=env)
+        elapsed = time.perf_counter() - t0
+
+        if result.returncode != 0:
+            print(
+                f"[run_all] FAIL  {step_name} (exit {result.returncode}, {elapsed:.1f}s)",
+                file=sys.stderr, flush=True,
+            )
+            return result.returncode
+
+        print(f"[run_all] DONE  {step_name} ({elapsed:.1f}s)", flush=True)
+
+    total = time.perf_counter() - total_start
+    print(f"[run_all] ALL DONE ({total:.1f}s)", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
