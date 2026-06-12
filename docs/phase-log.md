@@ -773,3 +773,54 @@ remains the verified 38-clique.**
 - The 2 ALPN neurons (DM1_lPN, DP1m_adPN) in the 38-clique are projection neurons, not local
   interneurons; science.md should note them as "guest" members of the antennal-lobe circuit
   (ACH, high confidence) that provide the output pathway from the recurrent lLN core.
+
+---
+
+## Phase P8d — Select and Finalize network.csv (2026-06-12)
+
+### What this phase did
+Formally selected the Engine A reciprocal 38-clique on (BANC, FAFB, MCNS) as the official
+submission and locked `network.csv` to that certificate.
+
+1. Read `results/biology/scores.json` and all three annotated CSVs to confirm the selection.
+   clique_38 leads all candidates: total score **73.32/100** (77.00 with synapse-level NT fill),
+   versus star_1877 at 66.55 and nocolor_1292 at 61.31.
+2. Copied `results/engine_a/certificates/reciprocal_clique__BANC-FAFB-MCNS.csv` → `network.csv`
+   (3-column header `BANC,FAFB,MCNS`, 38 data rows, neuron IDs as strings).
+3. Ran `python -m src.verify.check --candidate network.csv` — **PASS** (all 4 checks, exit 0).
+4. No `src/certify` module exists; step 3 is N/A.
+5. Confirmed final stats (see below).
+
+### Key decisions (and why)
+- **clique_38 selected over star_1877 and nocolor_1292** per the CLAUDE.md rule: a smaller
+  meaningful circuit outweighs a larger degenerate one. clique_38 is the only candidate with
+  non-zero CIRCUIT_RICHNESS (703/703 reciprocal pairs, 20/20), perfect ANATOMICAL_LOCALITY
+  (99.98% of internal synapses in AL_R, 20/20), and full identifiability (100% annotated).
+- **Raw Engine A certificate used for network.csv**, not the annotated version — the verifier
+  expects exactly 3 columns (BANC, FAFB, MCNS); the annotated CSV has additional columns that
+  would fail check 1.
+- **No certify module** — the verifier (`src/verify/check.py`) is the sole grading oracle per
+  the hard rule; it passed cleanly.
+
+### Final confirmed stats (source of truth for README.md and science.md)
+- **N** = 38
+- **Structure** = reciprocal clique (directed-graph isomorphism verified; all 1406 directed edges
+  present in every matching direction across BANC, FAFB, MCNS)
+- **Internal synapses (FAFB)** = 86,275; **directed edges** = 1,406; **density** = 1.0000
+- **Reciprocal pairs** = 703 of 703 possible (all 703 unordered pairs are mutually connected)
+- **Top 5 primary_types**: lLN1_bc (16), lLN2X12 (5), lLN2X04 (2), lLN2F_a (2), lLN2X11 (2)
+- **Dominant NT (neurons.csv)**: SER (9/38 with confidence label; 23/38 unlabelled)
+- **Synapse-weighted NT (connections_princeton)**: ACH 38.4%, SER 34.2%, DA 18.6%, GABA 8.8%
+- **Top neuropil**: AL_R (99.98% of internal synapses)
+- **super_class**: central (38/38); **flow**: intrinsic (38/38); **side**: right (38/38)
+- **Biological identity**: antennal-lobe local interneuron (lLN) recurrent circuit, right
+  hemisphere; 36/38 neurons are Codex class ALLN from hemilineage ALl1_dorsal; 2 are ALPN
+  (DM1_lPN, DP1m_adPN) providing the output pathway from the recurrent core.
+
+### Outputs produced
+- `network.csv` — **official submission** (38 rows × 3 columns BANC/FAFB/MCNS, verifier PASS)
+
+### Open questions
+- README.md technical writeup and science.md biological summary are the remaining deliverables;
+  all source material is available in `results/biology/` and this phase log.
+- The 2 ALPN neurons should be called out explicitly in science.md as the output pathway members.
