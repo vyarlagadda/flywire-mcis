@@ -55,3 +55,45 @@ def join_annotations(
         "root_id", "primary_type", "additional_types",
         "super_class", "flow", "side", "nt_type", "nt_type_score",
     ]]
+
+
+def compute_synapse_stats(
+    fafb_set: set[int],
+    connections: pd.DataFrame,
+) -> dict:
+    """Compute internal synapse statistics for a FAFB neuron set.
+
+    Returns dict with keys:
+      total_internal_synapses (int)
+      mean_syn_per_edge (float)
+      top3_neuropils (list of (neuropil, count) tuples, descending)
+    """
+    mask = (
+        connections["pre_root_id"].isin(fafb_set)
+        & connections["post_root_id"].isin(fafb_set)
+    )
+    internal = connections[mask].copy()
+
+    if internal.empty:
+        return {"total_internal_synapses": 0, "mean_syn_per_edge": 0.0, "top3_neuropils": []}
+
+    total = int(internal["syn_count"].sum())
+
+    per_pair = (
+        internal.groupby(["pre_root_id", "post_root_id"], sort=False)["syn_count"]
+        .sum()
+    )
+    mean_per_edge = float(per_pair.mean()) if len(per_pair) else 0.0
+
+    by_neuropil = (
+        internal.groupby("neuropil", sort=False)["syn_count"]
+        .sum()
+        .sort_values(ascending=False)
+    )
+    top3 = [(str(neuropil_name), int(cnt)) for neuropil_name, cnt in by_neuropil.head(3).items()]
+
+    return {
+        "total_internal_synapses": total,
+        "mean_syn_per_edge": mean_per_edge,
+        "top3_neuropils": top3,
+    }
