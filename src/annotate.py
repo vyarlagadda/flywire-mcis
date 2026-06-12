@@ -97,3 +97,85 @@ def compute_synapse_stats(
         "mean_syn_per_edge": mean_per_edge,
         "top3_neuropils": top3,
     }
+
+
+def format_summary(label: str, annotated: pd.DataFrame, stats: dict) -> str:
+    lines: list[str] = [f"=== {label} ===", f"N = {len(annotated)}"]
+
+    annotated_mask = annotated["primary_type"].notna()
+    frac = annotated_mask.sum() / len(annotated) if len(annotated) else 0.0
+    lines.append(f"Annotated fraction (primary_type not null): {frac:.2%}")
+
+    def _counts(col: str, top: int = 10) -> str:
+        vc = annotated[col].value_counts(dropna=True)
+        rows = "\n".join(f"  {k}: {v}" for k, v in vc.head(top).items())
+        return f"{col} counts:\n{rows}" if rows else f"{col} counts: (none)"
+
+    lines.append(_counts("primary_type", 10))
+    lines.append(_counts("super_class"))
+    lines.append(_counts("flow"))
+    lines.append(_counts("side"))
+    lines.append(_counts("nt_type"))
+
+    lines.append(f"total_internal_synapses: {stats['total_internal_synapses']}")
+    lines.append(f"mean_syn_per_edge: {stats['mean_syn_per_edge']:.2f}")
+
+    if stats["top3_neuropils"]:
+        np_lines = "\n".join(f"  {neuropil}: {cnt}" for neuropil, cnt in stats["top3_neuropils"])
+        lines.append(f"Top 3 neuropils by internal synapse count:\n{np_lines}")
+    else:
+        lines.append("Top 3 neuropils: (no internal synapses)")
+
+    unannotated = annotated.loc[~annotated_mask, "root_id"].tolist()
+    if unannotated:
+        lines.append(f"Unannotated root_ids ({len(unannotated)}):")
+        lines.extend(f"  {rid}" for rid in unannotated)
+    else:
+        lines.append("Unannotated root_ids: none")
+
+    return "\n".join(lines)
+
+
+def _load_annotation_tables() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Load all four Codex annotation tables from DATA_DIR."""
+    cell_types = pd.read_csv(DATA_DIR / "consolidated_cell_types.csv.gz")
+    classification = pd.read_csv(DATA_DIR / "classification.csv.gz")
+    neurons = pd.read_csv(DATA_DIR / "neurons.csv.gz")
+    connections = pd.read_csv(
+        DATA_DIR / "connections_princeton.csv.gz",
+        usecols=["pre_root_id", "post_root_id", "neuropil", "syn_count"],
+    )
+    return cell_types, classification, neurons, connections
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Annotate FAFB neurons in certified subgraphs")
+    parser.add_argument("--out-dir", default=str(RESULTS_DIR))
+    args = parser.parse_args()
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    cell_types, classification, neurons, connections = _load_annotation_tables()
+
+    summary_parts: list[str] = []
+    for label, cert_path in CERTIFICATES.items():
+        cert = pd.read_csv(cert_path)
+        fafb_ids = load_fafb_ids(cert)
+        annotated = join_annotations(fafb_ids, cell_types, classification, neurons)
+        fafb_set = set(fafb_ids.tolist())
+        stats = compute_synapse_stats(fafb_set, connections)
+
+        out_csv = out_dir / f"{label}_annotated.csv"
+        annotated.to_csv(out_csv, index=False)
+        print(f"Wrote {out_csv} ({len(annotated)} rows)")
+
+        summary_parts.append(format_summary(label, annotated, stats))
+
+    summary_path = out_dir / "annotation_summary.txt"
+    summary_path.write_text("\n\n".join(summary_parts) + "\n")
+    print(f"Wrote {summary_path}")
+
+
+if __name__ == "__main__":
+    main()
