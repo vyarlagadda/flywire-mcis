@@ -1,0 +1,2 @@
+engine,triple,n,structure,ok,reason,certificate,connectivity
+engine_c,BANC|FAFB|MCNS,38,clique,True,,certificates/engine_c__BANC-FAFB-MCNS.csv,weakly_connected

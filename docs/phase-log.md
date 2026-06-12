@@ -508,3 +508,56 @@ a corroboration record.
   from Engine C's ceiling artifact).
 - `network.csv` remains the Engine A **38-clique** (verified, meaningful, non-degenerate) — the
   correct submission at this stage.
+
+---
+
+## Phase P7 — Bounds & reproducibility (2026-06-11)
+
+### What this phase did
+Added `src/bounds/` (collect + ablation + summary), `scripts/run_all` pipeline, and
+`FLYWIRE_CONFIG` env-var support to `src/config.py`. Produces `results/bounds/summary.json`
+documenting the honest bound-vs-result gap and a 5-seed Engine C ablation.
+
+### Key decisions
+- **`FLYWIRE_CONFIG` env var** added to `src/config.py` (`load()` priority: explicit path >
+  env var > default). `snapshot()` now copies whichever config was last loaded, not always the
+  repo-root default. This lets `scripts/run_all --config <path>` propagate a custom config to
+  every subprocess step without modifying any module.
+- **Upper bounds scoped to chosen triple**: `collect_upper_bounds` accepts an optional `triple`
+  parameter; when given, degeneracy bounds are computed only for those datasets. This avoids the
+  misleading negative gap that results from mixing the MAOL degeneracy (29) with the BANC+FAFB+MCNS
+  star lower bound (1877) — two incompatible structure families.
+- **`best_lower_bound` scoped to chosen triple** via `primary_triple` param in `build_summary`:
+  reports the max verified N for the submitted triple (BANC+FAFB+MCNS = 38), not the global max
+  across all families (1877 for the directed-star triple FAFB+MAOL+MCNS).
+- **Ablation uses clique warm-start**: `run_ablation` passes the Engine A certificate to
+  `run_engine_c` as `clique_cert_path`, matching the normal invocation. Without this the greedy
+  finds N=0 from cold WL seeds — not because it's fragile, but because the 38-clique is only
+  reachable from the warm-start on these datasets.
+- **OGP / computation-to-optimization gap** noted verbatim in `summary.json["note"]`: problem is
+  NP-hard; best_lower_bound is a certificate, not a proven optimum.
+
+### Outputs produced
+- `src/config.py` — `FLYWIRE_CONFIG` env var + `_active_config_path` tracking
+- `src/bounds/compute.py` — `collect_lower_bounds`, `collect_upper_bounds`, `run_ablation`,
+  `build_summary` (243 lines)
+- `src/bounds/run.py` — CLI: `python -m src.bounds.run [--skip-ablation] [--results-dir]`
+- `scripts/run_all` — pipeline orchestrator; chains 10 steps; `--config` sets `FLYWIRE_CONFIG`
+- `tests/test_bounds.py` — 27 new tests (110 total, all passing)
+- `results/bounds/summary.json` — `best_lower_bound=38`, `tightest_upper_bound=48`, `gap=10`,
+  `ablation.min_N=38`, `ablation.max_N=38` (seeds 1–5, mean 19.4 s/seed)
+- `results/bounds/config.snapshot.yaml`
+
+### Key finding
+**N=38 is stable across all 5 ablation seeds** — every seed converges to the same 38-clique in
+~19 s, confirming it is a robust attractor for the greedy given the clique warm-start. The
+degeneracy+1 upper bound for the BANC+FAFB+MCNS triple is **48** (FAFB degeneracy = 47, so
+degeneracy+1 = 48), leaving an honest gap of **10**: the true optimum for the connected MCIS on
+this triple lies in [38, 48].
+
+### Open questions
+- **Gap [38, 48]**: a non-clique connected induced subgraph of size 39–48 may exist in
+  (BANC, FAFB, MCNS). Engine B's McSplit on a WL-seeded candidate pool (not the degenerate
+  Engine C certificate) is the correct tool to narrow this gap.
+- **`scripts/run_all` engine_c_nocolor step** uses `--no-color-key` and `--no-off-ablation`
+  flags; these are defined in `engine_c/run.py` argparse and confirmed working.
