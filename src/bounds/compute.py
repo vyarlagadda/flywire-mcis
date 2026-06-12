@@ -82,12 +82,19 @@ def collect_lower_bounds(results_dir: Path) -> list[dict[str, Any]]:
     return bounds
 
 
-def collect_upper_bounds(results_dir: Path, cfg: dict[str, Any]) -> dict[str, Any]:
+def collect_upper_bounds(
+    results_dir: Path,
+    cfg: dict[str, Any],
+    triple: list[str] | None = None,
+) -> dict[str, Any]:
     """Compile upper bounds from degeneracy analysis and WL color classes.
 
     Reads:
       - ``{results_dir}/engine_a/clique/{DATASET}.json`` for ``upper_bound`` per dataset
       - ``{results_dir}/invariants/candidate_pool.json`` for cross-dataset WL class capacity
+
+    If *triple* is given, degeneracy bounds are restricted to those datasets only.
+    This avoids mixing upper bounds across incompatible families/triples.
 
     Returns::
 
@@ -100,8 +107,9 @@ def collect_upper_bounds(results_dir: Path, cfg: dict[str, Any]) -> dict[str, An
     """
     degeneracy: dict[str, int] = {}
     clique_dir = results_dir / "engine_a" / "clique"
+    dataset_names = triple if triple is not None else list(cfg.get("data", {}).get("datasets", {}))
     if clique_dir.exists():
-        for dataset_name in cfg.get("data", {}).get("datasets", {}):
+        for dataset_name in dataset_names:
             p = clique_dir / f"{dataset_name}.json"
             if p.exists():
                 data = json.loads(p.read_text())
@@ -138,11 +146,13 @@ def run_ablation(
     seeds: list[int],
     datasets: dict[str, Any],
     triple: list[str],
+    clique_cert_path: Path | None = None,
 ) -> dict[int, dict[str, Any]]:
     """Run Engine C once per seed, writing to ``{base_out_dir}/ablation/seed_{seed}/``.
 
     For each seed:
       - Calls ``run_engine_c(...)`` with ``rng_seed=seed`` and ``snapshot=False``
+      - Passes *clique_cert_path* as the warm-start (matches the normal engine_c invocation)
       - Reads N from the ``best_connected_n`` key of the returned summary dict
       - Resets ``config._seed_override`` to its prior value after each run
 
@@ -172,7 +182,7 @@ def run_ablation(
                 caps=caps,
                 rng_seed=seed_val,
                 use_color_key=bool(ec.get("seed_color_key", True)),
-                clique_cert_path=None,
+                clique_cert_path=clique_cert_path,
                 run_off_ablation=False,
                 snapshot=False,
                 verbose=False,
@@ -197,19 +207,27 @@ def build_summary(
     upper_bounds: dict[str, Any],
     ablation: dict[int, dict[str, Any]],
     cfg_seed: int,
+    primary_triple: list[str] | None = None,
 ) -> dict[str, Any]:
     """Assemble the final bounds summary with gap analysis and OGP note.
 
     Parameters
     ----------
-    lower_bounds:  output of :func:`collect_lower_bounds`
-    upper_bounds:  output of :func:`collect_upper_bounds`
-    ablation:      output of :func:`run_ablation` (may be {} when skipped)
-    cfg_seed:      global RNG seed from config.yaml (recorded for reproducibility)
+    lower_bounds:    output of :func:`collect_lower_bounds`
+    upper_bounds:    output of :func:`collect_upper_bounds`
+    ablation:        output of :func:`run_ablation` (may be {} when skipped)
+    cfg_seed:        global RNG seed from config.yaml (recorded for reproducibility)
+    primary_triple:  if given, ``best_lower_bound`` is the max N for bounds on this
+                     triple only; the gap is then gap for the submitted solution.
 
     Returns a JSON-serializable dict ready to write as results/bounds/summary.json.
     """
-    best_lb = max((b["N"] for b in lower_bounds), default=0)
+    if primary_triple:
+        triple_str = "|".join(primary_triple)
+        primary_lb_list = [b for b in lower_bounds if b["triple"] == triple_str]
+    else:
+        primary_lb_list = lower_bounds
+    best_lb = max((b["N"] for b in primary_lb_list), default=0)
 
     deg = upper_bounds.get("degeneracy_clique", {})
     tightest_ub: int | None = min(deg.values()) if deg else None

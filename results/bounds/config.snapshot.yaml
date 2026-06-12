@@ -1,0 +1,63 @@
+seed: 20260610                       # global RNG seed; override per-run for ablations
+
+data:
+  dir: data/raw
+  datasets:
+    BANC: banc_626_edge_list.csv
+    FAFB: fafb_783_edge_list.csv
+    MANC: manc_1_2_1_edge_list.csv
+    MAOL: maol_1_1_edge_list.csv
+    MCNS: mcns_0_9_edge_list.csv
+  drop_self_loops: true
+  collapse_parallel_edges: true
+
+characterize:                        # Phase P1b — per-dataset structural fingerprint
+  degree_tail_k: 20                  # top-k high-degree nodes recorded per direction
+  degree_quantiles: [0.5, 0.9, 0.99]
+  motif_size: 3                      # directed n-node motif census (motifs_randesu)
+  dense_edge_threshold: 1000000      # sample the motif census above this many edges
+  motif_cut_prob: [0.0, 0.0, 0.9]    # length == motif_size; branch-skip probs, used only when dense
+
+invariants:
+  wl_seed_depth: 1          # shallow — for Engine C seed generation
+  wl_filter_depth: 5        # deep — for inline rejection during expansion
+  min_datasets_per_color_class: 3
+  gdv_enabled: false
+  gdv_sample_fraction: 0.05
+
+engine_a:                            # canonical
+  families: [reciprocal_clique, directed_star, complete_bipartite]
+  clique:   { restarts: 50, time_budget_s: 300 }   # exact largest_cliques bonus over the greedy floor
+  star:     { min_hub_out_degree: 20, time_budget_s: 300, swap_max_nodes: 2000 }
+  biclique: { enabled: true, time_budget_s: 300 }
+
+engine_c:                            # greedy seed-and-extend
+  chosen_triple: [BANC, FAFB, MCNS]  # set after reviewing the Engine A frontier
+  seed_source: gdv                    # wl | gdv  (gdv unavailable -> graceful WL fallback)
+  num_seeds: 1000
+  enforce_weak_connectivity: true
+  vertex_order: degree_signature     # processing order for the greedy
+  time_budget_s: 3600
+  seed_color_key: true               # shallow-WL color in the hard step key; false = advisory only
+  candidate_cap: 50000               # max candidate triples examined per growth step (hub guard)
+  boundary_cap: 200000               # max boundary nodes grouped per step (deterministic subsample)
+  off_pool_cap: 20000                # connectivity-OFF jump-pool size for the N-ceiling reference
+
+engine_b:
+  enabled: true
+  source_certificate: results/engine_c_nocolor/certificates/engine_c__BANC-FAFB-MCNS.csv
+  reduce:
+    target_candidate_nodes: 400
+    kcore_min: 3
+  solver:
+    backend: mcsplit
+    connected: true
+    smallest_first: true
+    per_instance_timeout_s: 300
+    time_budget_s: 900
+
+bounds:
+  ablation_seeds: [1, 2, 3, 4, 5]
+
+paths:
+  results_dir: results

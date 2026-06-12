@@ -1,0 +1,274 @@
+{
+  "generated_at": "2026-06-12T01:20:41+00:00",
+  "config_seed": 20260610,
+  "lower_bounds": [
+    {
+      "N": 1877,
+      "engine": "engine_a",
+      "family": "directed_star",
+      "triple": "FAFB|MAOL|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/directed_star__FAFB-MAOL-MCNS.csv"
+    },
+    {
+      "N": 314,
+      "engine": "engine_a",
+      "family": "directed_star",
+      "triple": "FAFB|MANC|MAOL",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/directed_star__FAFB-MANC-MAOL.csv"
+    },
+    {
+      "N": 314,
+      "engine": "engine_a",
+      "family": "directed_star",
+      "triple": "FAFB|MANC|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/directed_star__FAFB-MANC-MCNS.csv"
+    },
+    {
+      "N": 314,
+      "engine": "engine_a",
+      "family": "directed_star",
+      "triple": "MANC|MAOL|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/directed_star__MANC-MAOL-MCNS.csv"
+    },
+    {
+      "N": 38,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "BANC|FAFB|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__BANC-FAFB-MCNS.csv"
+    },
+    {
+      "N": 28,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "BANC|FAFB|MANC",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__BANC-FAFB-MANC.csv"
+    },
+    {
+      "N": 28,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "BANC|MANC|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__BANC-MANC-MCNS.csv"
+    },
+    {
+      "N": 28,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "FAFB|MANC|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__FAFB-MANC-MCNS.csv"
+    },
+    {
+      "N": 15,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "BANC|FAFB|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__BANC-FAFB-MCNS.csv"
+    },
+    {
+      "N": 12,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "BANC|FAFB|MAOL",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__BANC-FAFB-MAOL.csv"
+    },
+    {
+      "N": 12,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "BANC|MANC|MAOL",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__BANC-MANC-MAOL.csv"
+    },
+    {
+      "N": 12,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "BANC|MAOL|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__BANC-MAOL-MCNS.csv"
+    },
+    {
+      "N": 12,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "FAFB|MANC|MAOL",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__FAFB-MANC-MAOL.csv"
+    },
+    {
+      "N": 12,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "FAFB|MAOL|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__FAFB-MAOL-MCNS.csv"
+    },
+    {
+      "N": 12,
+      "engine": "engine_a",
+      "family": "reciprocal_clique",
+      "triple": "MANC|MAOL|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/reciprocal_clique__MANC-MAOL-MCNS.csv"
+    },
+    {
+      "N": 12,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "MANC|MAOL|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__MANC-MAOL-MCNS.csv"
+    },
+    {
+      "N": 8,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "BANC|FAFB|MANC",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__BANC-FAFB-MANC.csv"
+    },
+    {
+      "N": 8,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "BANC|FAFB|MAOL",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__BANC-FAFB-MAOL.csv"
+    },
+    {
+      "N": 8,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "BANC|MANC|MAOL",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__BANC-MANC-MAOL.csv"
+    },
+    {
+      "N": 8,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "BANC|MANC|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__BANC-MANC-MCNS.csv"
+    },
+    {
+      "N": 8,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "BANC|MAOL|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__BANC-MAOL-MCNS.csv"
+    },
+    {
+      "N": 8,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "FAFB|MANC|MAOL",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__FAFB-MANC-MAOL.csv"
+    },
+    {
+      "N": 8,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "FAFB|MANC|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__FAFB-MANC-MCNS.csv"
+    },
+    {
+      "N": 8,
+      "engine": "engine_a",
+      "family": "complete_bipartite",
+      "triple": "FAFB|MAOL|MCNS",
+      "verified": true,
+      "certificate": "results/engine_a/certificates/complete_bipartite__FAFB-MAOL-MCNS.csv"
+    },
+    {
+      "N": 38,
+      "engine": "engine_c",
+      "family": null,
+      "triple": "BANC|FAFB|MCNS",
+      "verified": true,
+      "certificate": "results/engine_c/certificates/engine_c__BANC-FAFB-MCNS.csv"
+    },
+    {
+      "N": 38,
+      "engine": "engine_b",
+      "family": null,
+      "triple": "BANC|FAFB|MCNS",
+      "verified": true,
+      "certificate": null
+    }
+  ],
+  "best_lower_bound": 38,
+  "upper_bounds": {
+    "degeneracy_clique": {
+      "BANC": 50,
+      "FAFB": 48,
+      "MCNS": 51
+    },
+    "wl_class_capacity": {
+      "max_class_size_per_dataset": {
+        "class_0": {
+          "BANC": 4,
+          "FAFB": 10,
+          "MAOL": 16
+        },
+        "class_1": {
+          "BANC": 4,
+          "FAFB": 10,
+          "MAOL": 16
+        }
+      },
+      "note": "WL color classes are necessary-not-sufficient; a shared color is a candidate correspondence only. The candidate_pool.json classes span MAOL-based triples and do not constrain the BANC+FAFB+MCNS triple directly."
+    }
+  },
+  "tightest_upper_bound": 48,
+  "gap": 10,
+  "ablation": {
+    "seeds_tested": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "results": {
+      "1": {
+        "N": 38,
+        "wall_clock_s": 19.59872283390723
+      },
+      "2": {
+        "N": 38,
+        "wall_clock_s": 18.910965916933492
+      },
+      "3": {
+        "N": 38,
+        "wall_clock_s": 19.44632795918733
+      },
+      "4": {
+        "N": 38,
+        "wall_clock_s": 19.374971624929458
+      },
+      "5": {
+        "N": 38,
+        "wall_clock_s": 19.81513545801863
+      }
+    },
+    "min_N": 38,
+    "max_N": 38,
+    "mean_wall_clock_s": 19.42922475859523
+  },
+  "note": "MCIS is NP-hard; best_lower_bound is a verified certificate, not a proven global optimum. The computation-to-optimization gap (OGP) means no greedy algorithm can reliably exceed this N on this instance family without exponential branching."
+}

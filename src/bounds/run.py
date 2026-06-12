@@ -57,7 +57,9 @@ def main(argv: list[str] | None = None) -> int:
     print(f"[bounds] found {len(lower_bounds)} verified lower bound(s)", flush=True)
 
     print("[bounds] collecting upper bounds ...", flush=True)
-    upper_bounds = collect_upper_bounds(results_dir, cfg)
+    chosen_triple = list(cfg.get("engine_c", {}).get("chosen_triple", []))
+    upper_bounds = collect_upper_bounds(results_dir, cfg,
+                                        triple=chosen_triple if chosen_triple else None)
     deg = upper_bounds.get("degeneracy_clique", {})
     if deg:
         print(f"[bounds] degeneracy upper bounds: {deg}", flush=True)
@@ -76,7 +78,10 @@ def main(argv: list[str] | None = None) -> int:
             datasets[name] = load_dataset(name, cfg)
             print(f"[bounds] loaded {name}", flush=True)
 
-        ablation = run_ablation(cfg, out_dir, seeds=seeds, datasets=datasets, triple=triple)
+        cert_dir = Path(cfg["paths"]["results_dir"]) / "engine_a" / "certificates"
+        clique_cert = cert_dir / f"reciprocal_clique__{'-'.join(sorted(triple))}.csv"
+        ablation = run_ablation(cfg, out_dir, seeds=seeds, datasets=datasets, triple=triple,
+                                clique_cert_path=clique_cert if clique_cert.exists() else None)
         print(f"[bounds] ablation results: {ablation}", flush=True)
     else:
         print("[bounds] skipping ablation (--skip-ablation)", flush=True)
@@ -86,6 +91,7 @@ def main(argv: list[str] | None = None) -> int:
         upper_bounds=upper_bounds,
         ablation=ablation,
         cfg_seed=config.seed(),
+        primary_triple=chosen_triple if chosen_triple else None,
     )
 
     summary_path = out_dir / "summary.json"
