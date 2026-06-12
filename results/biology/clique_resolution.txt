@@ -1,0 +1,248 @@
+
+======================================================================
+QUESTION 1 — NT COHERENCE SUPPRESSED BY MISSING ANNOTATIONS
+======================================================================
+
+--- 1a. NT type coverage (null vs non-null) ---
+Total neurons       : 38
+nt_type non-null    : 15  (39.5%)
+nt_type null        : 23  (60.5%)
+
+--- 1b. NT type distribution among annotated neurons ---
+  SER: 9  (23.7% of all 38;  60.0% of annotated)
+  ACH: 6  (15.8% of all 38;  40.0% of annotated)
+
+--- 1c. All columns available in neurons.csv.gz for the 38 clique root_ids ---
+Column list in neurons.csv.gz:
+  root_id
+  group
+  nt_type
+  nt_type_score
+  da_avg
+  ser_avg
+  gaba_avg
+  glut_avg
+  ach_avg
+  oct_avg
+
+Full neurons.csv.gz rows for the 38 clique neurons (sorted by root_id):
+           root_id    group nt_type  nt_type_score  da_avg  ser_avg  gaba_avg  glut_avg  ach_avg  oct_avg
+720575940605758142       AL     NaN           0.00    0.15     0.28      0.36      0.04     0.17      0.0
+720575940610161091       AL     NaN           0.00    0.32     0.29      0.15      0.04     0.19      0.0
+720575940612347571       AL     NaN           0.00    0.27     0.35      0.14      0.04     0.21      0.0
+720575940612637554       AL     NaN           0.00    0.25     0.26      0.19      0.03     0.27      0.0
+720575940613804259       AL     SER           0.34    0.12     0.34      0.23      0.12     0.19      0.0
+720575940614956072       AL     NaN           0.00    0.06     0.31      0.12      0.23     0.28      0.0
+720575940615708482       AL     NaN           0.00    0.24     0.21      0.22      0.04     0.28      0.0
+720575940616197819       AL     SER           0.40    0.21     0.40      0.18      0.05     0.15      0.0
+720575940616758322       AL     NaN           0.00    0.08     0.30      0.36      0.08     0.18      0.0
+720575940616908177       AL     NaN           0.00    0.24     0.24      0.18      0.04     0.30      0.0
+720575940617299131       AL     SER           0.38    0.20     0.38      0.19      0.06     0.17      0.0
+720575940618112310       AL     NaN           0.00    0.32     0.29      0.17      0.05     0.17      0.0
+720575940619071005 AL.MB_CA     ACH           0.92    0.01     0.04      0.02      0.01     0.92      0.0
+720575940621542747       AL     SER           0.44    0.21     0.44      0.11      0.06     0.17      0.0
+720575940621585279       AL     NaN           0.00    0.25     0.25      0.19      0.03     0.27      0.0
+720575940622338742       AL     NaN           0.00    0.26     0.24      0.21      0.05     0.25      0.0
+720575940622650879       AL     ACH           0.42    0.15     0.20      0.20      0.03     0.42      0.0
+720575940622726271 AL.MB_CA     ACH           0.94    0.02     0.01      0.01      0.01     0.94      0.0
+720575940623137997       AL     NaN           0.00    0.28     0.28      0.20      0.05     0.19      0.0
+720575940623792648       AL     NaN           0.00    0.27     0.25      0.16      0.04     0.28      0.0
+720575940624435128       AL     SER           0.48    0.16     0.48      0.14      0.04     0.19      0.0
+720575940624832743       AL     NaN           0.00    0.23     0.24      0.18      0.03     0.32      0.0
+720575940625584484       AL     ACH           0.45    0.14     0.19      0.18      0.02     0.45      0.0
+720575940625585508       AL     NaN           0.00    0.30     0.34      0.13      0.05     0.18      0.0
+720575940626342174       AL     NaN           0.00    0.22     0.21      0.21      0.06     0.30      0.0
+720575940628059978       AL     SER           0.43    0.18     0.43      0.16      0.03     0.20      0.0
+720575940629792732       AL     NaN           0.00    0.29     0.27      0.20      0.05     0.19      0.0
+720575940630225403       AL     ACH           0.41    0.16     0.18      0.23      0.02     0.41      0.0
+720575940631603281       AL     NaN           0.00    0.27     0.23      0.25      0.06     0.20      0.0
+720575940631704716       AL     NaN           0.00    0.25     0.23      0.20      0.04     0.28      0.0
+720575940637136752       AL     NaN           0.00    0.08     0.30      0.38      0.07     0.16      0.0
+720575940637623780       AL     SER           0.36    0.14     0.36      0.21      0.10     0.19      0.0
+720575940640415859       AL     ACH           0.45    0.14     0.18      0.21      0.02     0.45      0.0
+720575940640541091       AL     SER           0.38    0.24     0.38      0.13      0.04     0.21      0.0
+720575940640803200       AL     NaN           0.00    0.16     0.27      0.36      0.05     0.16      0.0
+720575940646576436       AL     SER           0.39    0.10     0.39      0.21      0.12     0.18      0.0
+720575940648633988       AL     NaN           0.00    0.25     0.23      0.19      0.06     0.27      0.0
+720575940660217729       AL     NaN           0.00    0.26     0.22      0.19      0.04     0.28      0.0
+
+--- 1d. nt_type_score for neurons with null nt_type label ---
+Neurons with null nt_type: 23
+  nt_type_score null  : 0
+  nt_type_score = 0.0 : 23
+  nt_type_score > 0   : 0
+
+Per-NT probability columns: ['da_avg', 'ser_avg', 'gaba_avg', 'glut_avg', 'ach_avg', 'oct_avg']
+Values for null-nt_type neurons:
+           root_id nt_type  nt_type_score  da_avg  ser_avg  gaba_avg  glut_avg  ach_avg  oct_avg
+720575940605758142     NaN            0.0    0.15     0.28      0.36      0.04     0.17      0.0
+720575940610161091     NaN            0.0    0.32     0.29      0.15      0.04     0.19      0.0
+720575940612347571     NaN            0.0    0.27     0.35      0.14      0.04     0.21      0.0
+720575940612637554     NaN            0.0    0.25     0.26      0.19      0.03     0.27      0.0
+720575940614956072     NaN            0.0    0.06     0.31      0.12      0.23     0.28      0.0
+720575940615708482     NaN            0.0    0.24     0.21      0.22      0.04     0.28      0.0
+720575940616758322     NaN            0.0    0.08     0.30      0.36      0.08     0.18      0.0
+720575940616908177     NaN            0.0    0.24     0.24      0.18      0.04     0.30      0.0
+720575940618112310     NaN            0.0    0.32     0.29      0.17      0.05     0.17      0.0
+720575940621585279     NaN            0.0    0.25     0.25      0.19      0.03     0.27      0.0
+720575940622338742     NaN            0.0    0.26     0.24      0.21      0.05     0.25      0.0
+720575940623137997     NaN            0.0    0.28     0.28      0.20      0.05     0.19      0.0
+720575940623792648     NaN            0.0    0.27     0.25      0.16      0.04     0.28      0.0
+720575940624832743     NaN            0.0    0.23     0.24      0.18      0.03     0.32      0.0
+720575940625585508     NaN            0.0    0.30     0.34      0.13      0.05     0.18      0.0
+720575940626342174     NaN            0.0    0.22     0.21      0.21      0.06     0.30      0.0
+720575940629792732     NaN            0.0    0.29     0.27      0.20      0.05     0.19      0.0
+720575940631603281     NaN            0.0    0.27     0.23      0.25      0.06     0.20      0.0
+720575940631704716     NaN            0.0    0.25     0.23      0.20      0.04     0.28      0.0
+720575940637136752     NaN            0.0    0.08     0.30      0.38      0.07     0.16      0.0
+720575940640803200     NaN            0.0    0.16     0.27      0.36      0.05     0.16      0.0
+720575940648633988     NaN            0.0    0.25     0.23      0.19      0.06     0.27      0.0
+720575940660217729     NaN            0.0    0.26     0.22      0.19      0.04     0.28      0.0
+
+--- 1e. NT distribution grouped by primary_type ---
+primary_type | n_total | nt_null | nt_annotated | nt distribution
+  DM1_lPN        |       1 |       0 |            1 | ACH:1
+  DP1m_adPN      |       1 |       0 |            1 | ACH:1
+  lLN1_a         |       1 |       0 |            1 | SER:1
+  lLN1_bc        |      16 |      15 |            1 | SER:1
+  lLN2F_a        |       2 |       2 |            0 | —
+  lLN2T_c        |       2 |       0 |            2 | SER:2
+  lLN2X03        |       1 |       0 |            1 | SER:1
+  lLN2X04        |       2 |       2 |            0 | —
+  lLN2X05        |       2 |       0 |            2 | SER:2
+  lLN2X07        |       1 |       0 |            1 | ACH:1
+  lLN2X10        |       1 |       0 |            1 | ACH:1
+  lLN2X11        |       2 |       0 |            2 | SER:2
+  lLN2X12        |       5 |       3 |            2 | ACH:2
+  v2LN30         |       1 |       1 |            0 | —
+
+======================================================================
+QUESTION 2 — TYPE_COHERENCE WITH COLLAPSED PARENT TYPES
+======================================================================
+
+--- 2a. Full primary_type distribution (all 38 neurons) ---
+  lLN1_bc              : 16
+  lLN2X12              : 5
+  lLN2X04              : 2
+  lLN2F_a              : 2
+  lLN2X11              : 2
+  lLN2T_c              : 2
+  lLN2X05              : 2
+  DM1_lPN              : 1
+  lLN2X03              : 1
+  lLN2X07              : 1
+  lLN1_a               : 1
+  v2LN30               : 1
+  DP1m_adPN            : 1
+  lLN2X10              : 1
+
+--- 2b. parent_type mapping and distribution (lLN1_x → lLN1, lLN2_x → lLN2) ---
+  lLN2                 : 18
+  lLN1                 : 17
+  DM1_lPN              : 1
+  v2LN30               : 1
+  DP1m_adPN            : 1
+
+--- 2c. collapsed_type distribution (all lLN variants → 'lLN') ---
+  lLN                  : 35
+  DM1_lPN              : 1
+  v2LN30               : 1
+  DP1m_adPN            : 1
+
+--- 2d. TYPE_COHERENCE scores at each level of resolution ---
+  primary_type  (original, ~10 types): TYPE_COHERENCE = 8.59/20
+  parent_type   (lLN1 vs lLN2 level) : TYPE_COHERENCE = 14.50/20
+  collapsed_type (all lLN as one)     : TYPE_COHERENCE = 18.00/20
+
+Entropy details:
+  primary_type        : H=2.9950 bits, log2(N)=5.2479, H/log2(N)=0.5707
+  parent_type         : H=1.4441 bits, log2(N)=5.2479, H/log2(N)=0.2752
+  collapsed_type      : H=0.5236 bits, log2(N)=5.2479, H/log2(N)=0.0998
+
+--- 2e. Classification hierarchy for the 38 neurons (from classification.csv.gz) ---
+Columns available in classification.csv.gz:
+  root_id
+  flow
+  super_class
+  class
+  sub_class
+  hemilineage
+  side
+  nerve
+
+Classification rows for the 38 clique neurons:
+           root_id      flow super_class class     sub_class  hemilineage  side nerve
+720575940605758142 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940610161091 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940612347571 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940612637554 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940613804259 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940614956072 intrinsic     central  ALLN           NaN         ALv2 right   NaN
+720575940615708482 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940616197819 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940616758322 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940616908177 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940617299131 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940618112310 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940619071005 intrinsic     central  ALPN uniglomerular ALl1_ventral right   NaN
+720575940621542747 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940621585279 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940622338742 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940622650879 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940622726271 intrinsic     central  ALPN uniglomerular  ALad1__prim right   NaN
+720575940623137997 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940623792648 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940624435128 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940624832743 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940625584484 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940625585508 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940626342174 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940628059978 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940629792732 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940630225403 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940631603281 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940631704716 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940637136752 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940637623780 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940640415859 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940640541091 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940640803200 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940646576436 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940648633988 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+720575940660217729 intrinsic     central  ALLN           NaN  ALl1_dorsal right   NaN
+
+Value counts per classification column:
+  flow:
+    intrinsic                     : 38
+  super_class:
+    central                       : 38
+  class:
+    ALLN                          : 36
+    ALPN                          : 2
+  sub_class:
+    nan                           : 36
+    uniglomerular                 : 2
+  hemilineage:
+    ALl1_dorsal                   : 35
+    ALad1__prim                   : 1
+    ALv2                          : 1
+    ALl1_ventral                  : 1
+  side:
+    right                         : 38
+  nerve:
+    nan                           : 38
+
+======================================================================
+SUMMARY FOR SCIENCE.MD
+======================================================================
+
+NT COHERENCE:
+  15/38 neurons have nt_type annotation (39.5%)
+  Of these: {'SER': np.int64(9), 'ACH': np.int64(6)}
+  23 unannotated neurons — check 1d for whether per-NT probability columns exist
+
+TYPE_COHERENCE at three resolutions:
+  Raw primary_type : 8.59/20
+  Parent type      : 14.50/20
+  Collapsed lLN    : 18.00/20
+  Collapsed composition: {'lLN': 35, 'DM1_lPN': 1, 'v2LN30': 1, 'DP1m_adPN': 1}
