@@ -682,3 +682,57 @@ specific rather than large and heterogeneous).
   in science.md.
 - scores.json provides all inputs needed to write the science.md comparison section —
   next phase.
+
+---
+
+## Phase P8c — Select and Finalize network.csv (2026-06-12)
+
+### What this phase did
+Finalized the official submission by selecting clique_38 (the 38-neuron reciprocal clique on
+BANC+FAFB+MCNS) as the network.csv entry, copying the Engine A certificate directly, and
+confirming it passes all four verifier checks.
+
+### Selection rationale
+clique_38 scored highest (73.32/100) on all five biological significance components except
+NT_COHERENCE and TYPE_COHERENCE, where it loses to the degenerate structures. It is the only
+candidate that satisfies the CLAUDE.md "smaller meaningful over larger degenerate" rule:
+every node has degree 37 (fully reciprocal clique), CIRCUIT_RICHNESS = 20/20, and
+ANATOMICAL_LOCALITY = 20/20 (all AL_R). The other candidates are either a pure out-star
+(CIRCUIT_RICHNESS = 0) or a heterogeneous hub-and-spoke structure (low TYPE_COHERENCE).
+
+### Verified output (verifier PASS)
+```
+Candidate verification
+  datasets : BANC, FAFB, MCNS
+  N (rows) : 38
+  [1] structural ................ PASS
+  [2] existence ................. PASS
+  [3] induced isomorphism ....... PASS
+  [4] weak connectivity ......... PASS
+  structure: clique
+RESULT: PASS
+```
+
+### Final confirmed stats (source of truth for README.md / science.md)
+- **N** = 38 neurons
+- **Structure** = fully-reciprocal directed clique (all 38×37 = 1,406 directed edges present)
+- **Reciprocal pairs** = 703 (all C(38,2) unordered pairs)
+- **Total internal synapses (FAFB)** = 86,275 across 1,406 edges (mean 61.4 syn/edge)
+- **Top neuropil** = AL_R (99.98% of internal synapses)
+- **Top 5 primary cell types**: lLN1_bc (16), lLN2X12 (5), lLN2X04 (2), lLN2F_a (2), lLN2X11 (2)
+- **Dominant NT** = SER (9/38 annotated; many lLN1_bc lack nt_type annotation)
+- **Biological score** = 73.32/100 (IDENTIFIABILITY 20, TYPE_COHERENCE 8.59, NT_COHERENCE 4.74,
+  ANATOMICAL_LOCALITY 20, CIRCUIT_RICHNESS 20)
+
+### Outputs produced
+- `network.csv` — official submission (copied from
+  `results/engine_a/certificates/reciprocal_clique__BANC-FAFB-MCNS.csv`; header BANC,FAFB,MCNS;
+  38 data rows; verifier PASS)
+
+### Open questions
+- NT_COHERENCE (4.74) is suppressed by missing nt_type annotations on lLN1_bc neurons; the
+  true NT coherence is likely higher. Science.md should flag this caveat.
+- TYPE_COHERENCE (8.59) reflects lLN subtype diversity; collapsing to the parent "lLN" type
+  would yield a much higher score — worth discussing in science.md.
+- Next deliverables: README.md (technical chain-of-thought) and science.md (one-page
+  scientific summary).
