@@ -8,11 +8,11 @@
 
 ## Choosing the Right Three Datasets
 
-Before searching, I needed to pick which three datasets to focus further on. If I was to do this blindly, mixing very different datasets, it would make finding a large common subgraph harder because the local circuit statistics might look very different.
+Before searching, I needed to pick which three datasets to focus further on. If I was to do this blindly, it would make finding a large common subgraph harder because the local circuit statistics might look very different.
 
-So instead, to measure similarity, I computed the distribution of all possible 3-neuron connection patterns (3-node directed motif profile) of each dataset and measured the L1 distance between profiles for every possible triple. Following this, **BANC + FAFB + MCNS had the lowest total distance (0.389)**, which simply means their local connectivity patterns are more similar to each other than any other combination of datasets. This was the best choice by a large margin, as the next-best triple was 0.609.
+To measure similarity, I computed the distribution of all possible 3-neuron connection patterns (3-node directed motif profile) of each dataset and measured the L1 distance between profiles for every possible triple. Following this, **BANC + FAFB + MCNS had the lowest total distance (0.389)**, which simply means their local connectivity patterns are more similar to each other than any other combination of datasets. This was the best choice by a large margin, as the next-best triple was 0.609.
 
-I also confirmed my choice against the upper bound for the reciprocal clique search for the other data sets as well. From this, I found that any triple containing MAOL would be capped at N=12 because the MAOL dataset's dense reciprocal core is small despite having the most total edges. Finally, the BANC + FAFB + MCNS tripley also has a theoretical ceiling of N=48, which made it the clear triple for me to work with.
+I also confirmed my choice against the upper bound for the reciprocal clique search for the other data sets as well. I found that any triple containing MAOL would be capped at N=12 because the MAOL dataset's dense reciprocal core is small despite having the most total edges. Finally, the BANC + FAFB + MCNS triplet also has a theoretical ceiling of N=48, which made it the clear triple for me to work with.
 
 ---
 
@@ -22,7 +22,7 @@ Before searching, every dataset I planned to use was cleaned up the same way:
 
 - **Self-loops Removed:** A neuron connecting to itself would carry no circuit information and would instead negatively affect the isomorphism check, so they were removed.
 - **Parallel Edges Collapsed:** Here, multiple rows for the same directed pair were merged into one edge, since we are ignoring the weights of any edges in this analysis.
-- **Neuron IDs:** — BANC and FAFB have 18-digit root IDs, so instead of treating them as numbers, I simply converted them to strings.
+- **Neuron IDs:** BANC and FAFB have 18-digit root IDs, so instead of treating them as numbers, I simply converted them to strings.
 
 ---
 
@@ -57,7 +57,7 @@ To officially start this problem, my first "engine" explicitly searches for thre
 
 From the data above, The triple minimum gives N=38 for BANC+FAFB+MCNS. Note that my exact search finished in roughly under 6 seconds seconds on every dataset.
 
-**Directed star:** A structure with one hub neuron connected to many leaves, with no connections between leaves. This kind of search produced N=1,877 on FAFB+MAOL+MCNS. The exact rationaled for why I declined this structure is further below.
+**Directed star:** A structure with one hub neuron connected to many leaves, with no connections between leaves. This kind of search produced N=1,877 on FAFB+MAOL+MCNS. The exact rationale for why I declined this structure is further below.
 
 **Complete Bipartite** A structure with two groups of neurons where every neuron in group A connects to every neuron in group B. This search produced N=15 on BANC+FAFB+MCNS which is smaller than the clique found earlier.
 
@@ -65,7 +65,7 @@ All 24 verified certificates from each test run with Engine A can be found in `r
 
 ### Engine B — WL Filtering and McSplit
 
-Then, for another kind of search, before running exact branch-and-bound search later, I researched and used Weisfeiler-Leman (WL) color refinement to filter the candidate space. Here, WL assigns each neuron a "color" based on its neighborhood structure so two neurons with different colors cannot possibly be matched. Alongside this, by using content-hash colors (a hash of the actual degree values), these colors are directly comparable across different datasets without any kind of shared lookup table.
+Then, for another kind of search, before running exact branch-and-bound search later, I researched and used Weisfeiler-Leman (WL) color refinement to filter the candidate space. Here, WL assigns each neuron a "color" based on its neighborhood structure so two neurons with different colors cannot be matched. Alongside this, by using content-hash colors (a hash of the actual degree values), these colors are directly comparable across different datasets without any kind of shared lookup table.
 
 At depth 5, WL reduced the candidate pool from 11,211 shared color classes at depth 0 down to just 2 which means deep WL was a near perfect separator across these three connectomes. Because of that, this ruled out almost every neuron as a possible match partner before any expensive search began.
 
@@ -77,7 +77,7 @@ This third "engine" directly started from the verified 38-clique and tried to gr
 
 I also continued this, and by running with a strict color filter (requiring WL color agreement on top of signature agreement), the greedy search could not find a 39th consistent triplet which is another independent confirmation of N=38 as the local cap. This same process was run five times with different random seeds, and all five converged to N=38 in about 19 seconds each.
 
-Running without the color filter, the greedy search grew to N=1,292 before the time limit I gave for the search ran out. A further structure analysis revealed that 1,254 of those neurons were degree-1 leaves each connected to the 38-clique core by a single edge but not connected to each other. This is the same degeneracy structure as the directed star.
+Running without the color filter, the greedy search grew to N=1,292 before the time limit I gave for the search ran out. A further structure analysis revealed that 1,254 of those neurons were degree-1 leaves each connected to the 38-clique core by a single edge but not connected to each other, which is the same degeneracy structure as the directed star.
 
 ---
 
