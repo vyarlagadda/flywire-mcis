@@ -4,10 +4,10 @@
       "Bash(python:*)", "Bash(python3:*)", "Bash(pip:*)", "Bash(pytest:*)",
       "Bash(git add:*)", "Bash(git commit:*)", "Bash(git status:*)",
       "Bash(git diff:*)", "Bash(git log:*)", "Bash(git branch:*)", "Bash(git checkout:*)",
-      "Bash(ls:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(wc:*)", "Bash(mkdir:*)"
+      "Bash(ls:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(wc:*)", "Bash(mkdir:*)",
+      "Bash(git push:*)"
     ],
     "deny": [
-      "Bash(git push:*)",
       "Bash(rm -rf:*)",
       "Read(./data/raw/**)"
     ]

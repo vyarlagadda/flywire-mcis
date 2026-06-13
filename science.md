@@ -1,8 +1,4 @@
-# A Conserved Recurrent Inhibitory Circuit in the Drosophila Antennal Lobe
-
-**Dataset:** FAFB v783 — Female Adult Fly Brain  
-**Circuit:** 38-neuron fully reciprocal clique of antennal lobe local interneurons (AL_R)  
-**Also present in:** BANC v626 (female brain + VNC), MCNS v0.9 (male whole CNS)
+# A Conserved Recurrent Inhibitory Circuit in the Drosophila Antennal Lobe (FAFB)
 
 ---
 
@@ -10,11 +6,11 @@
 
 | Network Graph (top 50 connections by synapse count) | 3D Neuron Meshes in FAFB |
 |:---:|:---:|
-| *(see network_graph.png)* | *(see mesh_3d.png)* |
+| https://drive.google.com/file/d/1DnCPzZByT9lrKBWgUmWQ5120oZiLU3uk/view?usp=sharing | https://drive.google.com/file/d/1Ac9l-aJG2Tjsg3pepVqBzxXibabRUS4f/view?usp=sharing |
 
 **[Open all 38 neurons in Codex 3D viewer →](https://codex.flywire.ai/app/view_3d?dataset=fafb&root_ids=720575940622338742,720575940619071005,720575940637136752,720575940637623780,720575940640541091,720575940640803200,720575940610161091,720575940628059978,720575940640415859,720575940621542747,720575940621585279,720575940612347571,720575940646576436,720575940605758142,720575940648633988,720575940612637554,720575940629792732,720575940622650879,720575940660217729,720575940613804259,720575940630225403,720575940616758322,720575940616908177,720575940624832743,720575940623137997,720575940617299131,720575940614956072,720575940622726271,720575940625584484,720575940618112310,720575940625585508,720575940615708482,720575940623792648,720575940631603281,720575940626342174,720575940616197819,720575940631704716,720575940624435128)**
 
-The network graph shows two natural clusters — an lLN2 subtype group (upper, with stronger individual connections, up to 618 synapses per pair) and an lLN1_bc group (lower, more evenly distributed). The two projection neurons, DM1_lPN and DP1m_adPN, appear as peripheral nodes receiving from the lLN2 core. The 3D mesh view shows all 38 neurons as a dense mass co-localized in the right antennal lobe, with the two projection neurons extending axons outward toward the mushroom body.
+From the images above, the network graph shows two natural clusters: an lLN2 subtype group (upper with stronger individual connections (up to 618 synapses per pair)) and an lLN1_bc group (lower and more evenly distributed). The two projection neurons, DM1_lPN and DP1m_adPN, appear to be peripheral nodes receiving from the lLN2 core. Furthermore, the 3D mesh view shows all 38 neurons as a dense mass co-localized in the right antennal lobe, with the two projection neurons extending outward toward the body.
 
 ---
 
@@ -24,7 +20,7 @@ The 38 matched neurons in FAFB are all right-hemisphere, central, intrinsic neur
 
 The dominant cell types are lLN1_bc (16 neurons) and various lLN2 subtypes (lLN2X12, lLN2X04, lLN2F_a, lLN2X11, lLN2T_c, lLN2X05 — 17 neurons combined). The lLN1 and lLN2 classes are the two main multiglomerular inhibitory populations in the Drosophila antennal lobe, known to span many or all glomeruli and coordinate activity across odor channels [1].
 
-All 1,406 possible directed edges are present, and all 703 unordered pairs are bidirectional — every neuron in the circuit connects to every other in both directions. The 86,275 internal synapses land almost entirely in AL_R (99.98%). The mean connection strength is 61.4 synapses per directed pair, with the strongest single connection at 618 synapses (lLN2T_c → v2LN30).
+All 1,406 possible directed edges are present, and all 703 unordered pairs are bidirectional. The 86,275 internal synapses are almost entirely in AL_R (99.98%). The mean connection strength is 61.4 synapses per directed pair, with the strongest single connection at 618 synapses (lLN2T_c → v2LN30).
 
 The synapse-weighted neurotransmitter profile of the internal connections is cholinergic-serotonergic: ACH 38.4%, SER 34.2%, DA 18.6%, GABA 8.8%. Note that per-neuron NT labels from Codex are ambiguous for 23 of the 38 neurons because the classifier confidence fell below threshold — a documented limitation for this cell class [2].
 
