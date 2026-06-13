@@ -6,16 +6,6 @@
 
 ---
 
-## The Problem
-
-My task was to find the largest set of N neurons that appears in at least three of the five connectome datasets ( BANC (female brain and nerve cord), FAFB (female adult fly brain), MANC (male adult nerve cord), MAOL (male adult optic lobe), and MCNS (male whole CNS) ) such that the connections between those neurons are identical across all three datasets and the neurons form a single connected structure.
-
-We also had certain constraints to clarify "Identical connections": pick N neurons in dataset A, N in dataset B, and N in dataset C, and line them up row by row. For every pair of rows, if neuron in row 2 connects to neuron in row 5 in dataset A, it must do the same in datasets B and C. If there is no connection in dataset A, there must be no connection in B or C either. This has to hold for every pair in both directions. That is just directed graph isomorphism under the row alignment, and it is what the verifier checks.
-
-Since this type of problem is NP-hard, there is no efficient shortcut as the search space grows exponentially with N. So instead, the following results I report is a verified lower bound: a solution I found and verified.
-
----
-
 ## Choosing the Right Three Datasets
 
 Before searching, I needed to pick which three datasets to focus further on. If I was to do this blindly, mixing very different datasets, it would make finding a large common subgraph harder because the local circuit statistics might look very different.
