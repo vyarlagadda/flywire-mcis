@@ -8,7 +8,7 @@
 |:---:|:---:|
 | ![Network Graph](./images/network-graph.png) | ![3D Mesh](./images/3d-mesh.png) |
 
-**[Open all 38 neurons in Codex 3D viewer →](https://codex.flywire.ai/app/view_3d?dataset=fafb&root_ids=720575940622338742,720575940619071005,720575940637136752,720575940637623780,720575940640541091,720575940640803200,720575940610161091,720575940628059978,720575940640415859,720575940621542747,720575940621585279,720575940612347571,720575940646576436,720575940605758142,720575940648633988,720575940612637554,720575940629792732,720575940622650879,720575940660217729,720575940613804259,720575940630225403,720575940616758322,720575940616908177,720575940624832743,720575940623137997,720575940617299131,720575940614956072,720575940622726271,720575940625584484,720575940618112310,720575940625585508,720575940615708482,720575940623792648,720575940631603281,720575940626342174,720575940616197819,720575940631704716,720575940624435128)**
+**[Open all 38 neurons in Codex 3D viewer →](https://codex.flywire.ai/app/view_3d?dataset=fafb&query=720575940622338742%2C720575940619071005%2C720575940637136752%2C720575940637623780%2C720575940640541091%2C720575940640803200%2C720575940610161091%2C720575940628059978%2C720575940640415859%2C720575940621542747%2C720575940621585279%2C720575940612347571%2C720575940646576436%2C720575940605758142%2C720575940648633988%2C720575940612637554%2C720575940629792732%2C720575940622650879%2C720575940660217729%2C720575940613804259%2C720575940630225403%2C720575940616758322%2C720575940616908177%2C720575940624832743%2C720575940623137997%2C720575940617299131%2C720575940614956072%2C720575940622726271%2C720575940625584484%2C720575940618112310%2C720575940625585508%2C720575940615708482%2C720575940623792648%2C720575940631603281%2C720575940626342174%2C720575940616197819%2C720575940631704716%2C720575940624435128&action=&dark_background=0)**
 
 From the images above, the network graph shows two natural clusters: an lLN2 subtype group (upper with stronger individual connections (up to 618 synapses per pair)) and an lLN1_bc group (lower and more evenly distributed). The two projection neurons, DM1_lPN and DP1m_adPN, appear to be peripheral nodes receiving from the lLN2 center. Furthermore, the 3D mesh view shows all 38 neurons as a dense mass co-localized in the right antennal lobe, with the two projection neurons extending outward toward the body.
 
@@ -40,9 +40,9 @@ The two embedded projection neurons (DM1_lPN and DP1m_adPN) are also among the s
 
 ## Why It Appears in Three Connectomes
 
-The same 38-neuron circuit, with identical directed topology, was found in three independent EM reconstructions, the FAFB (female brain), BANC (female brain and ventral nerve cord), and MCNS (male whole CNS). These span both sexes and multiple body regions.
+The same 38-neuron circuit, with identical directed topology, was found in the FAFB (female brain), BANC (female brain and ventral nerve cord), and MCNS (male whole CNS). These span both sexes and multiple body regions.
 
-The antennal lobe is already known to be broadly stereotyped across individuals [5]. Finding the identical graph structure of a 38-neuron fully reciprocal inhibitory clique across male and female flies suggests this specific circuit is an exactly reproducible wiring pattern. The antennal lobe is one of the two highest-reciprocity neuropils in the entire FlyWire connectome, and its neuropil-specific highly reciprocal neurons are predominantly inhibitory ALLNs [6]. The 38-neuron clique is a concrete example of this class of structure.
+The antennal lobe is already known to be broadly stereotyped across individuals [5]. Finding the identical graph structure of a 38-neuron fully reciprocal inhibitory clique across male and female flies suggests this specific circuit is an exactly reproducible circuit. The antennal lobe is one of the two highest-reciprocity neuropils in the entire FlyWire connectome, and its neuropil-specific highly reciprocal neurons are predominantly inhibitory ALLNs [6]. The 38-neuron clique is a concrete example of this class of structure.
 
 ---
 
