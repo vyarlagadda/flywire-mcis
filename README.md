@@ -32,7 +32,7 @@ Simply put, my total search used three independent "engines", with each approach
 
 ### The Verifier
 
-Before writing any search code, I wrote a simply verification script `src/verify/check.py` which runs four checks in order:
+Before writing any search code, I wrote a simple verification script `src/verify/check.py` which runs four checks in order:
 
 1. **Structural:** Correct number of columns, no duplicate IDs, at least 2 rows.
 2. **Existence:** Check if every neuron ID actually appears in its respective dataset.
