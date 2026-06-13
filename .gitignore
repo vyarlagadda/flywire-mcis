@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 data/raw/
+data/fafb_annotations/
 .claude/settings.local.json
 *.log
 .DS_Store
