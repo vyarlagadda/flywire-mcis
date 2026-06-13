@@ -50,7 +50,7 @@ The antennal lobe is already known to be broadly stereotyped across individuals 
 
 The 38-neuron reciprocal ALLN clique represents a conserved gain control module in the right antennal lobe. I hypothesize that this circuit sets the dynamic range of olfactory processing in the right hemisphere by implementing divisive normalization across the glomeruli it innervates. Because the circuit is structurally identical across male and female flies, its function is unlikely to be sex-specific. Instead, it may reflect a general-purpose computational unit for odor intensity normalization that is developmentally hardwired from the ALl1_dorsal lineage.
 
-As a side note, you could directly test this. By this, I mean optogenetically silencing the 36 ALLN members of this circuit while recording from right-hemisphere projection neurons should specifically impair gain normalization. PN responses should saturate at lower odor concentrations and lose concentration-invariant identity coding, without equivalently affecting left-hemisphere PNs.
+In fact, you could directly test this. By this, I mean silencing the 36 ALLN members of this circuit while recording from right-hemisphere projection neurons should specifically impair gain normalization. PN responses should saturate at lower odor concentrations and lose concentration-invariant identity coding, without equivalently affecting left-hemisphere PNs.
 
 ---
 

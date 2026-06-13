@@ -108,7 +108,7 @@ Followind my analysis, I reached a verified lower bound N=38, and a theoretical 
 
 After a simple structural analysis, I found that the two larger results were perfectly valid according to the challenge guidelines, but they were structurally degenerate.
 
-The **directed star (N=1,877)** is one CT1-type hub neuron connected outward to 1,876 T4/T5 optic lobe leaves. The leaves have zero connections to each other. There is no recurrent structure, no internal connectivity between the leaf neurons, it is a hub with leaves, and was not a circuit according to the assumptions and constraints I made for myself.
+The **directed star (N=1,877)** is one CT1-type hub neuron connected outward to 1,876 T4/T5 optic lobe leaves. The leaves have zero connections to each other. There is no recurrent structure, no internal connectivity between the leaf neurons, it is a hub with leaves, and was not a circuit according to the assumptions and constraints I made for myself when wanting to find clear biological significance.
 
 The **nocolor extension (N=1,292)** was the same problem. The k-core peeling revealed that 1,254 of the 1,292 neurons had degree 1 or 2 in the joint subgraph, which shows that they are also just leaves hanging off the 38-clique core. By removing them, you are left with exactly the 38-neurons clique.
 
