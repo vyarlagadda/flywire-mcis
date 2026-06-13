@@ -20,7 +20,7 @@ The 38 matched neurons in FAFB are all right-hemisphere, central, intrinsic neur
 
 The dominant cell types are lLN1_bc (16 neurons) and various lLN2 subtypes (lLN2X12, lLN2X04, lLN2F_a, lLN2X11, lLN2T_c, lLN2X05 — 17 neurons combined). The lLN1 and lLN2 classes are the two main multiglomerular inhibitory populations in the Drosophila antennal lobe, known to span many or all glomeruli and coordinate activity across odor channels [1].
 
-From the structure, all 1,406 possible directed edges are present, and all 703 unordered pairs are bidirectional. The 86,275 internal synapses are almost entirely in AL_R (99.98%). The mean connection strength is 61.4 synapses per directed pair, with the strongest single connection at 618 synapses (lLN2T_c → v2LN30).
+All 1,406 possible directed edges are present, and all 703 unordered pairs are bidirectional. The 86,275 internal synapses are almost entirely in AL_R (99.98%). The mean connection strength is 61.4 synapses per directed pair, with the strongest single connection at 618 synapses (lLN2T_c → v2LN30).
 
 The synapse-weighted neurotransmitter profile of the internal connections is cholinergic-serotonergic: ACH 38.4%, SER 34.2%, DA 18.6%, GABA 8.8%. It is important to note that per-neuron NT labels from Codex are ambiguous for 23 of the 38 neurons because the classifier confidence fell below threshold [2].
 
@@ -32,9 +32,9 @@ The antennal lobe is the fly's first olfactory processing center. Olfactory rece
 
 The key function of multiglomerular LNs is **lateral inhibition**. Specifically, when one glomerulus is strongly activated by an odor, the LNs spread that signal across many other glomeruli and suppress their output. This keeps the PN responses calibrated to the total odor intensity rather than saturating on strong odors, a process called **divisive normalization** [3]. Essentially, the LN network prevents any one odor channel from dominating and keeps the system sensitive across a wide range of odor concentrations.
 
-The all-to-all bidirectional topology of the 38-neuron clique is also vital for this type of computation as well. When two neurons mutually inhibit each other, their individual activity levels become coupled, meaning each is partially suppressed by the other's response. With all 703 pairs in the circuit doing this simultaneously, the result is a globally coordinated suppression that normalizes activity across all participating glomeruli. LN-LN reciprocal connections in the antennal lobe are also specifically implicated in bistable gain control, where the recurrent inhibitory network can switch between a mode that suppresses global activity (when odors are strong) and a mode that allows weak signals through (when odors are faint) [4].
+Furthermore, the all-to-all bidirectional topology of the 38-neuron clique is a necessity for this type of computation. When two neurons mutually inhibit each other, their individual activity levels become coupled, meaning each is partially suppressed by the other's response. With all 703 pairs in the circuit doing this simultaneously, the result is a globally coordinated suppression that normalizes activity across all participating glomeruli. LN-LN reciprocal connections in the antennal lobe are also specifically implicated in bistable gain control, where the recurrent inhibitory network can switch between a mode that suppresses global activity (when odors are strong) and a mode that allows weak signals through (when odors are faint) [4].
 
-The two embedded projection neurons (DM1_lPN and DP1m_adPN) are also crucial drivers in the circuit. Here, DM1_lPN sends 408 synapses to lLN2T_c and DP1m_adPN sends 305 synapses to the same target. Their presence inside this recurrent clique suggests the circuit also incorporates direct feedback from the output layer, and not just interneuron-to-interneuron inhibition. The circuit sits upwards of the mushroom body, with 9,701 synapses flowing from the clique members to KCab Kenyon cells and 4,881 to KCg-m Kenyon cells. This connects the recurrent LN network in the pipeline for olfactory learning and memory.
+The two embedded projection neurons (DM1_lPN and DP1m_adPN) are also crucial drivers in the circuit. Here, DM1_lPN sends 408 synapses to lLN2T_c and DP1m_adPN sends 305 synapses to the same target. Their presence inside this recurrent clique suggests the circuit also incorporates direct feedback from the output layer, and not just interneuron-to-interneuron inhibition. The circuit sits upstream of the mushroom body, with 9,701 synapses flowing from the clique members to KCab Kenyon cells and 4,881 to KCg-m Kenyon cells. This puts the recurrent LN network directly in the path of signals for olfactory learning and memory.
 
 ---
 
@@ -42,7 +42,7 @@ The two embedded projection neurons (DM1_lPN and DP1m_adPN) are also crucial dri
 
 The same 38-neuron circuit, with identical directed topology, was found in the FAFB (female brain), BANC (female brain and ventral nerve cord), and MCNS (male whole CNS). These span both sexes and multiple body regions.
 
-The antennal lobe is already known to be broadly stereotyped across individuals [5]. Finding the identical graph structure of a 38-neuron fully reciprocal inhibitory clique across male and female flies suggests this specific circuit is an exactly reproducible circuit. The antennal lobe is one of the two highest-reciprocity neuropils in the entire FlyWire connectome, and its neuropil-specific highly reciprocal neurons are predominantly inhibitory ALLNs [6]. The 38-neuron clique is a concrete example of this class of structure.
+The antennal lobe is already known to be broadly stereotyped across individuals [5]. Finding the identical graph structure of a 38-neuron fully reciprocal inhibitory clique across male and female flies suggests this specific circuit is a structurally stereotyped circuit. The antennal lobe is one of the two highest-reciprocity neuropils in the entire FlyWire connectome, and its neuropil-specific highly reciprocal neurons are predominantly inhibitory ALLNs [6]. The 38-neuron clique is a concrete example of this class of structure.
 
 ---
 
@@ -50,7 +50,7 @@ The antennal lobe is already known to be broadly stereotyped across individuals 
 
 The 38-neuron reciprocal ALLN clique represents a conserved gain control module in the right antennal lobe. I hypothesize that this circuit sets the dynamic range of olfactory processing in the right hemisphere by implementing divisive normalization across the glomeruli it innervates. Because the circuit is structurally identical across male and female flies, its function is unlikely to be sex-specific. Instead, it may reflect a general-purpose computational unit for odor intensity normalization that is developmentally hardwired from the ALl1_dorsal lineage.
 
-In fact, you could directly test this. By this, I mean silencing the 36 ALLN members of this circuit while recording from right-hemisphere projection neurons should specifically impair gain normalization. PN responses should saturate at lower odor concentrations and lose concentration-invariant identity coding, without equivalently affecting left-hemisphere PNs.
+This could be directly tested. Silencing the 36 ALLN members of this circuit while recording from right-hemisphere projection neurons should specifically impair gain normalization. PN responses should saturate at lower odor concentrations and lose concentration-invariant identity coding, without equivalently affecting left-hemisphere PNs.
 
 ---
 
